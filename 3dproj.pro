@@ -296,13 +296,17 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     k1class.cpp \
-    point2mesh.cpp
+    point2mesh.cpp \
+    k2class.cpp \
+    kinect2_grabber.cpp
 
 HEADERS += \
         mainwindow.h \
     k1class.h \
     point2mesh.h \
-    pointa.h
+    pointa.h \
+    k2class.h \
+    kinect2_grabber.h
 
 FORMS += \
         mainwindow.ui

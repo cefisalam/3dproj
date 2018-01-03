@@ -2,14 +2,13 @@
 
 Point2Mesh::Point2Mesh(QObject *parent) : QObject(parent)
 {
-
 }
 
-void Point2Mesh::calc_normals(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud,
+void Point2Mesh::calc_normals(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                               pcl::PointCloud<pcl::PointNormal>::Ptr pc_normals)
 {
-    pcl::NormalEstimation<pcl::PointXYZRGBA, pcl::PointNormal> normal_est;
-    pcl::search::KdTree<pcl::PointXYZRGBA>::Ptr kdtree (new pcl::search::KdTree<pcl::PointXYZRGBA> ());
+    pcl::NormalEstimation<pcl::PointXYZ, pcl::PointNormal> normal_est;
+    pcl::search::KdTree<pcl::PointXYZ>::Ptr kdtree (new pcl::search::KdTree<pcl::PointXYZ> ());
     normal_est.setSearchMethod (kdtree);
     normal_est.setKSearch (30);
 
@@ -18,19 +17,59 @@ void Point2Mesh::calc_normals(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud,
     pcl::copyPointCloud (*cloud, *pc_normals);
 }
 
-void Point2Mesh::estimate_align (pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr cloud1,
-                                 pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr cloud2,
-                                 pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_final,
+void Point2Mesh::point2mesh (pcl::PCLPointCloud2 cloud)
+{
+    pcl::PointCloud<pcl::Normal>::Ptr normal (new pcl::PointCloud<pcl::Normal>);
+    pcl::PointCloud<pcl::PointNormal>::Ptr normal_pc (new pcl::PointCloud<pcl::PointNormal>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_pcl (new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PolygonMesh triangles;
+    pcl::search::KdTree<pcl::PointXYZ>::Ptr kdtree (new pcl::search::KdTree<pcl::PointXYZ>);
+    pcl::search::KdTree<pcl::PointNormal>::Ptr kdtreeN (new pcl::search::KdTree<pcl::PointNormal>);
+    pcl::GreedyProjectionTriangulation<pcl::PointNormal> greedy;
+
+    pcl::fromPCLPointCloud2 (cloud, *cloud_pcl);
+
+    //Normal estimation
+    pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> normal_est;
+    kdtree->setInputCloud(cloud_pcl);
+    normal_est.setInputCloud(cloud_pcl);
+    normal_est.setSearchMethod(kdtree);
+    normal_est.setKSearch(20);
+    normal_est.compute(*normal);
+
+    pcl::concatenateFields(*cloud_pcl, *normal, *normal_pc);
+    kdtreeN->setInputCloud(normal_pc);
+
+    greedy.setMu (2.5);
+    greedy.setMaximumNearestNeighbors (100);
+    greedy.setMaximumSurfaceAngle(M_PI/4);
+    greedy.setMinimumAngle(M_PI/18);
+    greedy.setMaximumAngle(2*M_PI/3);
+    greedy.setNormalConsistency(false);
+    greedy.setInputCloud (normal_pc);
+    greedy.setSearchMethod (kdtreeN);
+    greedy.reconstruct (triangles);
+
+    std::vector<int> parts = greedy.getPartIDs();
+    std::vector<int> states = greedy.getPointStates();
+
+    std::string str = "teste2.stl";
+    pcl::io::savePolygonFileSTL(str, triangles, true);
+}
+
+void Point2Mesh::estimate_align (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud1,
+                                 pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud2,
+                                 pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_final,
                                  Eigen::Matrix4f &transf_m,
                                  bool flag)
 
 {
 
-    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr c1 (new pcl::PointCloud<pcl::PointXYZRGBA>);
-    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr c2 (new pcl::PointCloud<pcl::PointXYZRGBA>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr c1 (new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr c2 (new pcl::PointCloud<pcl::PointXYZ>);
     pcl::PointCloud<pcl::PointNormal>::Ptr normal_c1 (new pcl::PointCloud<pcl::PointNormal>);
     pcl::PointCloud<pcl::PointNormal>::Ptr normal_c2 (new pcl::PointCloud<pcl::PointNormal>);
-    pcl::VoxelGrid<pcl::PointXYZRGBA> grid;
+    pcl::VoxelGrid<pcl::PointXYZ> grid;
     PointA new_point;
     float init_values [4] = {1.0, 1.0, 1.0, 1.0};
 
@@ -57,7 +96,7 @@ void Point2Mesh::estimate_align (pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr cl
 
     pcl::IterativeClosestPointNonLinear<pcl::PointNormal, pcl::PointNormal> icp;
     icp.setTransformationEpsilon (1e-6);
-    icp.setMaxCorrespondenceDistance (0.05);
+    icp.setMaxCorrespondenceDistance (0.2);
     icp.setPointRepresentation (boost::make_shared<const PointA> (new_point));
 
     icp.setInputSource (normal_c1);

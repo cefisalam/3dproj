@@ -35,7 +35,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
     pcl::PolygonMesh::Ptr poly_mesh;
 
 private slots:

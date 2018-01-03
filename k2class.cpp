@@ -1,43 +1,48 @@
-#include "k1class.h"
+#include "k2class.h"
 
-k1class::k1class(QObject *parent) : QObject(parent),
-                                    viewer ("Viewer 1"),
+k2class::k2class(QObject *parent) : QObject(parent),
+                                    viewer (new pcl::visualization::PCLVisualizer ("Viewer 2")),
                                     clouds (0),
                                     p2m (nullptr),
                                     final_cloud (new pcl::PointCloud<pcl::PointXYZ>)
 {
 }
 
-void k1class::cloud_cb_func(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud)
-{
-    if (!viewer.wasStopped())
-        viewer.showCloud (cloud);
-
-    clouds.push_back(cloud);
-    pcl::io::savePLYFile("t.ply", *cloud, true);
-}
-
-void k1class::init ()
+void k2class::init ()
 {
     int time = 0;
-    pcl::Grabber *grabber = new pcl::io::OpenNI2Grabber();
+    boost::mutex mt;
+    boost::shared_ptr<pcl::Grabber> grabber = boost::make_shared<pcl::Kinect2Grabber>();
+    pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr cloud;
 
-    boost::function<void (const pcl::PointCloud<pcl::PointXYZ>::ConstPtr&)> func_cb =
-            boost::bind (&k1class::cloud_cb_func, this, _1);
+    viewer->setCameraPosition( 0.0, 0.0, -2.5, 0.0, 0.0, 0.0 );
+    boost::function<void( const pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr& )> func_cb =
+            [&cloud, &mt]( const pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr& ptr){
+        boost::mutex::scoped_lock lock(mt);
+        cloud = ptr->makeShared();
+    };
 
-    grabber->registerCallback (func_cb);
+
+    boost::signals2::connection conn = grabber->registerCallback(func_cb);
+
     grabber->start();
 
     while (time < 2)
     {
-        boost::this_thread::sleep (boost::posix_time::seconds (1));
-        time++;
+        viewer->spinOnce();
+
+        boost::mutex::scoped_try_lock lock_mutex2 (mt);
+        if( lock_mutex2.owns_lock() && cloud){
+            if( !viewer->updatePointCloud(cloud, "cloud")){
+                viewer->addPointCloud(cloud, "cloud");
+            }
+        }
     }
 
     grabber->stop ();
 }
 
-void k1class::registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds)
+void k2class::registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds)
 {
 
     //pcl::PointCloud<pcl::PointXYZ>::Ptr final_cloud (new pcl::PointCloud<pcl::PointXYZ>);

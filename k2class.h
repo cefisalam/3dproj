@@ -1,11 +1,15 @@
-#ifndef K1CLASS_H
-#define K1CLASS_H
+#ifndef K2CLASS_H
+#define K2CLASS_H
 
+//Internal
 #include "point2mesh.h"
+#include "kinect2_grabber.h"
 
+//QT
 #include <QObject>
 #include <vector>
 
+//PCL
 #include <pcl/common/angles.h>
 #include <pcl/io/openni2_grabber.h>
 #include <pcl/visualization/pcl_visualizer.h>
@@ -22,14 +26,12 @@
 #include <pcl/console/print.h>
 #include <pcl/console/parse.h>
 
-
-class k1class : public QObject
+class k2class : public QObject
 {
     Q_OBJECT
-
 public:
-    explicit k1class(QObject *parent = nullptr);
-    pcl::visualization::CloudViewer viewer;
+    explicit k2class(QObject *parent = nullptr);
+    boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
     std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds;
     pcl::PointCloud<pcl::PointXYZ>::Ptr final_cloud;
     Point2Mesh p2m;
@@ -37,9 +39,8 @@ public:
 signals:
 
 public slots:
-    void cloud_cb_func (const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& cloud);
     void init();
     void registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds);
 };
 
-#endif // K1CLASS_H
+#endif // K2CLASS_H

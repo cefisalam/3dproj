@@ -4,7 +4,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    cloud (new pcl::PointCloud<pcl::PointXYZRGBA>()),
+    cloud (new pcl::PointCloud<pcl::PointXYZ>()),
     poly_mesh (new pcl::PolygonMesh())
 {
     ui->setupUi(this);
