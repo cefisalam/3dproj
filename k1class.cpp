@@ -13,8 +13,16 @@ void k1class::cloud_cb_func(const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& clou
     if (!viewer.wasStopped())
         viewer.showCloud (cloud);
 
-    clouds.push_back(cloud);
-    pcl::io::savePLYFile("t.ply", *cloud, true);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr filter_cloud (new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PassThrough<pcl::PointXYZ> filter;
+
+    filter.setInputCloud(cloud);
+    filter.setFilterFieldName("z");
+    filter.setFilterLimits(0.0, 1.0);
+
+    filter.filter(*filter_cloud);
+    //pcl::io::savePLYFile("t.ply", *filter_cloud, true);
+    clouds.push_back(filter_cloud);
 }
 
 void k1class::init ()
@@ -26,16 +34,17 @@ void k1class::init ()
             boost::bind (&k1class::cloud_cb_func, this, _1);
 
     grabber->registerCallback (func_cb);
+
     grabber->start();
 
-    QTime initial_time = QTime::currentTime().addSecs(10);
-    QTime final_time;
-    std::cout << "INITIAL: " << initial_time.second() << std::endl;
-    while (final_time < initial_time)
+    //QTime initial_time = QTime::currentTime().addSecs(10);
+    //QTime final_time;
+    //std::cout << "INITIAL: " << initial_time.second() << std::endl;
+    while (!viewer.wasStopped())
     {
         boost::this_thread::sleep (boost::posix_time::seconds (1));
-        final_time = QTime::currentTime();
-        std::cout << "FINAL: " << final_time.second() << std::endl;
+        //final_time = QTime::currentTime();
+        //std::cout << "FINAL: " << final_time.second() << std::endl;
     }
 
     grabber->stop ();
@@ -61,15 +70,11 @@ void k1class::registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr>
         transf_m = transf_m * transf2p2;
     }
 
-    std::stringstream ss;
-    ss << "teste1.ply";
-    //pcl::io::savePCDFile(ss.str(), *final_cloud, true);
-    pcl::io::savePLYFile(ss.str(), *final_cloud, true);
+    pcl::io::savePCDFile("pointcloud.pcd", *final_cloud, true);
+    pcl::PCLPointCloud2 cloud;
+    pcl::io::loadPCDFile("pointcloud.pcd", cloud);
 
-    //    pcl::PCLPointCloud2 cloud;
-    //    pcl::io::loadPCDFile(ss.str(), cloud);
-
-    //    p2m.point2mesh(cloud);
+    p2m.point2mesh(cloud);
 
     //    std::stringstream ss1;
     //    ss1 << "teste1.ply";

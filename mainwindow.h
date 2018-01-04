@@ -1,6 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+//Internal
+#include "point2mesh.h"
+
 //Qt
 #include <QMainWindow>
 #include <QMessageBox>
@@ -35,8 +38,10 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
+    //pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
+    //pcl::PCLPointCloud2 cloud;
     pcl::PolygonMesh::Ptr poly_mesh;
+    Point2Mesh p2m;
 
 private slots:
     void on_actionOpen_file_triggered();

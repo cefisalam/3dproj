@@ -34,12 +34,13 @@ void Point2Mesh::point2mesh (pcl::PCLPointCloud2 cloud)
     kdtree->setInputCloud(cloud_pcl);
     normal_est.setInputCloud(cloud_pcl);
     normal_est.setSearchMethod(kdtree);
-    normal_est.setKSearch(20);
+    normal_est.setKSearch(10);
     normal_est.compute(*normal);
 
     pcl::concatenateFields(*cloud_pcl, *normal, *normal_pc);
     kdtreeN->setInputCloud(normal_pc);
 
+    greedy.setSearchRadius (0.025);
     greedy.setMu (2.5);
     greedy.setMaximumNearestNeighbors (100);
     greedy.setMaximumSurfaceAngle(M_PI/4);
@@ -53,8 +54,13 @@ void Point2Mesh::point2mesh (pcl::PCLPointCloud2 cloud)
     std::vector<int> parts = greedy.getPartIDs();
     std::vector<int> states = greedy.getPointStates();
 
+    std::cout << "PARTS: " << parts.size() << std::endl;
+    std::cout << "STATES: " << states.size() << std::endl;
+
     std::string str = "teste2.stl";
     pcl::io::savePolygonFileSTL(str, triangles, true);
+
+    std::cout << "FINSHED TRIANGLE" << std::endl;
 }
 
 void Point2Mesh::estimate_align (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud1,

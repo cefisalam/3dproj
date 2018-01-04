@@ -1,5 +1,7 @@
 #include "k2class.h"
 
+//std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds;
+
 k2class::k2class(QObject *parent) : QObject(parent),
     viewer (new pcl::visualization::PCLVisualizer ("Viewer 2")),
     clouds (0),
@@ -10,14 +12,15 @@ k2class::k2class(QObject *parent) : QObject(parent),
 
 void k2class::init ()
 {
-    int time = 0;
+
     boost::mutex mt;
     boost::shared_ptr<pcl::Grabber> grabber = boost::make_shared<pcl::Kinect2Grabber>();
     pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud;
 
     viewer->setCameraPosition( 0.0, 0.0, -2.5, 0.0, 0.0, 0.0 );
     boost::function<void( const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& )> func_cb =
-            [&cloud, &mt]( const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& ptr){
+            [&cloud, &mt, this]( const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& ptr)
+    {
         boost::mutex::scoped_lock lock(mt);
         cloud = ptr->makeShared();
     };
@@ -27,22 +30,34 @@ void k2class::init ()
 
     grabber->start();
 
-    while (time < 10)
+    while (!viewer->wasStopped())
     {
         viewer->spinOnce();
 
         boost::mutex::scoped_try_lock lock_mutex2 (mt);
         if( lock_mutex2.owns_lock() && cloud){
+
+            int time = 0;
+
+            pcl::PointCloud<pcl::PointXYZ>::Ptr filter_cloud (new pcl::PointCloud<pcl::PointXYZ>);
+            pcl::PassThrough<pcl::PointXYZ> filter;
+            filter.setInputCloud(cloud);
+            filter.setFilterFieldName("z");
+            filter.setFilterLimits(0.0, 1.0);
+            filter.filter(*filter_cloud);
+
+            std::stringstream ss;
+            ss << time << ".ply";
+            pcl::io::savePCDFile(ss.str(), *filter_cloud, true);
+
+            clouds.push_back(filter_cloud);
+            time++;
+
             if(!viewer->updatePointCloud(cloud, "cloud")){
                 viewer->addPointCloud(cloud, "cloud");
-
-                std::stringstream ss;
-                ss << time << ".ply";
-                pcl::io::savePCDFile("point.pcd", *cloud, true);
-
-                clouds.push_back(cloud);
-                time++;
             }
+
+            //time++;
         }
     }
 
