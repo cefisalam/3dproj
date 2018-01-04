@@ -1,10 +1,10 @@
 #include "k2class.h"
 
 k2class::k2class(QObject *parent) : QObject(parent),
-                                    viewer (new pcl::visualization::PCLVisualizer ("Viewer 2")),
-                                    clouds (0),
-                                    p2m (nullptr),
-                                    final_cloud (new pcl::PointCloud<pcl::PointXYZ>)
+    viewer (new pcl::visualization::PCLVisualizer ("Viewer 2")),
+    clouds (0),
+    p2m (nullptr),
+    final_cloud (new pcl::PointCloud<pcl::PointXYZ>)
 {
 }
 
@@ -13,11 +13,11 @@ void k2class::init ()
     int time = 0;
     boost::mutex mt;
     boost::shared_ptr<pcl::Grabber> grabber = boost::make_shared<pcl::Kinect2Grabber>();
-    pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr cloud;
+    pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud;
 
     viewer->setCameraPosition( 0.0, 0.0, -2.5, 0.0, 0.0, 0.0 );
-    boost::function<void( const pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr& )> func_cb =
-            [&cloud, &mt]( const pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr& ptr){
+    boost::function<void( const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& )> func_cb =
+            [&cloud, &mt]( const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& ptr){
         boost::mutex::scoped_lock lock(mt);
         cloud = ptr->makeShared();
     };
@@ -33,8 +33,10 @@ void k2class::init ()
 
         boost::mutex::scoped_try_lock lock_mutex2 (mt);
         if( lock_mutex2.owns_lock() && cloud){
-            if( !viewer->updatePointCloud(cloud, "cloud")){
+            if(!viewer->updatePointCloud(cloud, "cloud")){
                 viewer->addPointCloud(cloud, "cloud");
+
+                clouds.push_back(cloud);
             }
         }
     }
@@ -67,19 +69,19 @@ void k2class::registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr>
     //pcl::io::savePCDFile(ss.str(), *final_cloud, true);
     pcl::io::savePLYFile(ss.str(), *final_cloud, true);
 
-//    pcl::PCLPointCloud2 cloud;
-//    pcl::io::loadPCDFile(ss.str(), cloud);
+    //    pcl::PCLPointCloud2 cloud;
+    //    pcl::io::loadPCDFile(ss.str(), cloud);
 
-//    p2m.point2mesh(cloud);
+    //    p2m.point2mesh(cloud);
 
-//    std::stringstream ss1;
-//    ss1 << "teste1.ply";
-//    pcl::PLYWriter writer;
-//    writer.write (ss1.str(), cloud , Eigen::Vector4f::Zero (),
-//                  Eigen::Quaternionf::Identity (), true, true);
+    //    std::stringstream ss1;
+    //    ss1 << "teste1.ply";
+    //    pcl::PLYWriter writer;
+    //    writer.write (ss1.str(), cloud , Eigen::Vector4f::Zero (),
+    //                  Eigen::Quaternionf::Identity (), true, true);
 
-//    pcl::PolygonMesh mesh;
-//    pcl::io::loadPLYFile(ss1.str(), mesh);
+    //    pcl::PolygonMesh mesh;
+    //    pcl::io::loadPLYFile(ss1.str(), mesh);
 
     std::cout << "FINISHED" << std::endl;
 }

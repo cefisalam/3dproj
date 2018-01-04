@@ -4,6 +4,7 @@
 #include "point2mesh.h"
 
 #include <QObject>
+#include <QTime>
 #include <vector>
 
 #include <pcl/common/angles.h>
