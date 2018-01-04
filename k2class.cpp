@@ -27,7 +27,7 @@ void k2class::init ()
 
     grabber->start();
 
-    while (time < 2)
+    while (time < 10)
     {
         viewer->spinOnce();
 
@@ -36,7 +36,12 @@ void k2class::init ()
             if(!viewer->updatePointCloud(cloud, "cloud")){
                 viewer->addPointCloud(cloud, "cloud");
 
+                std::stringstream ss;
+                ss << time << ".ply";
+                pcl::io::savePCDFile("point.pcd", *cloud, true);
+
                 clouds.push_back(cloud);
+                time++;
             }
         }
     }
@@ -64,10 +69,8 @@ void k2class::registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr>
         transf_m = transf_m * transf2p2;
     }
 
-    std::stringstream ss;
-    ss << "teste1.ply";
-    //pcl::io::savePCDFile(ss.str(), *final_cloud, true);
-    pcl::io::savePLYFile(ss.str(), *final_cloud, true);
+    pcl::io::savePCDFile("point.pcd", *final_cloud, true);
+    pcl::io::savePLYFile("point.ply", *final_cloud, true);
 
     //    pcl::PCLPointCloud2 cloud;
     //    pcl::io::loadPCDFile(ss.str(), cloud);
