@@ -39,6 +39,7 @@ public:
     QAction *actionOpen_file;
     QAction *actionSave_file;
     QAction *actionAbout;
+    QAction *actionOpen_files;
     QWidget *centralWidget;
     QGridLayout *gridLayout;
     QFrame *frame_3;
@@ -103,6 +104,11 @@ public:
         QIcon icon2;
         icon2.addFile(QStringLiteral(":/icons/resource/if_info_6077.png"), QSize(), QIcon::Normal, QIcon::Off);
         actionAbout->setIcon(icon2);
+        actionOpen_files = new QAction(MainWindow);
+        actionOpen_files->setObjectName(QStringLiteral("actionOpen_files"));
+        QIcon icon3;
+        icon3.addFile(QStringLiteral(":/icons/resource/if_folder_new_6056.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionOpen_files->setIcon(icon3);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         gridLayout = new QGridLayout(centralWidget);
@@ -171,9 +177,9 @@ public:
 
         toolButton = new QToolButton(groupBox_2);
         toolButton->setObjectName(QStringLiteral("toolButton"));
-        QIcon icon3;
-        icon3.addFile(QStringLiteral(":/icons/resource/if_player_play_6154.png"), QSize(), QIcon::Normal, QIcon::Off);
-        toolButton->setIcon(icon3);
+        QIcon icon4;
+        icon4.addFile(QStringLiteral(":/icons/resource/if_player_play_6154.png"), QSize(), QIcon::Normal, QIcon::Off);
+        toolButton->setIcon(icon4);
         toolButton->setIconSize(QSize(32, 32));
         toolButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
@@ -181,9 +187,9 @@ public:
 
         toolButton_2 = new QToolButton(groupBox_2);
         toolButton_2->setObjectName(QStringLiteral("toolButton_2"));
-        QIcon icon4;
-        icon4.addFile(QStringLiteral(":/icons/resource/if_player_stop_6158.png"), QSize(), QIcon::Normal, QIcon::Off);
-        toolButton_2->setIcon(icon4);
+        QIcon icon5;
+        icon5.addFile(QStringLiteral(":/icons/resource/if_player_stop_6158.png"), QSize(), QIcon::Normal, QIcon::Off);
+        toolButton_2->setIcon(icon5);
         toolButton_2->setIconSize(QSize(32, 32));
         toolButton_2->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
@@ -211,9 +217,9 @@ public:
         sizePolicy3.setVerticalStretch(0);
         sizePolicy3.setHeightForWidth(toolButton_4->sizePolicy().hasHeightForWidth());
         toolButton_4->setSizePolicy(sizePolicy3);
-        QIcon icon5;
-        icon5.addFile(QStringLiteral(":/icons/resource/if_folder_home2_6854.png"), QSize(), QIcon::Normal, QIcon::Off);
-        toolButton_4->setIcon(icon5);
+        QIcon icon6;
+        icon6.addFile(QStringLiteral(":/icons/resource/if_edit_user_6020.png"), QSize(), QIcon::Normal, QIcon::Off);
+        toolButton_4->setIcon(icon6);
         toolButton_4->setIconSize(QSize(48, 48));
         toolButton_4->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
@@ -252,9 +258,9 @@ public:
         sizePolicy5.setVerticalStretch(0);
         sizePolicy5.setHeightForWidth(toolButton_3->sizePolicy().hasHeightForWidth());
         toolButton_3->setSizePolicy(sizePolicy5);
-        QIcon icon6;
-        icon6.addFile(QStringLiteral(":/icons/resource/if_emerald-theme-manager_6296.png"), QSize(), QIcon::Normal, QIcon::Off);
-        toolButton_3->setIcon(icon6);
+        QIcon icon7;
+        icon7.addFile(QStringLiteral(":/icons/resource/if_emerald-theme-manager_6296.png"), QSize(), QIcon::Normal, QIcon::Off);
+        toolButton_3->setIcon(icon7);
         toolButton_3->setIconSize(QSize(32, 32));
         toolButton_3->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
@@ -282,6 +288,7 @@ public:
         menuBar->addAction(menuFile->menuAction());
         menuBar->addAction(menuHelp->menuAction());
         menuFile->addAction(actionOpen_file);
+        menuFile->addAction(actionOpen_files);
         menuFile->addAction(actionSave_file);
         menuHelp->addAction(actionAbout);
 
@@ -296,6 +303,7 @@ public:
         actionOpen_file->setText(QApplication::translate("MainWindow", "Open file", Q_NULLPTR));
         actionSave_file->setText(QApplication::translate("MainWindow", "Save file", Q_NULLPTR));
         actionAbout->setText(QApplication::translate("MainWindow", "About", Q_NULLPTR));
+        actionOpen_files->setText(QApplication::translate("MainWindow", "Open files", Q_NULLPTR));
         groupBox_2->setTitle(QApplication::translate("MainWindow", "Acquisition Features", Q_NULLPTR));
         toolButton->setText(QApplication::translate("MainWindow", "Start \n"
 "Acquisition", Q_NULLPTR));

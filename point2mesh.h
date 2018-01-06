@@ -1,10 +1,10 @@
 #ifndef POINT2MESH_H
 #define POINT2MESH_H
 
-
 #include "pointa.h"
 
 #include <QObject>
+#include <QDebug>
 
 #include <boost/make_shared.hpp>
 #include <pcl/point_types.h>
@@ -52,10 +52,11 @@ signals:
 public slots:
     void calc_normals(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                       pcl::PointCloud<pcl::PointNormal>::Ptr pc_normals);
-    void estimate_align (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud1,
-                         pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud2,
+    void estimate_align (const pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud1,
+                         const pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud2,
                          pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_final,
-                         Eigen::Matrix4f &transf_m, bool flag);
+                         Eigen::Matrix4f &transf_m,
+                         bool flag);
 
     pcl::PolygonMesh point2mesh (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_pcl, int type);
     void filtering (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);

@@ -34,16 +34,13 @@ class k1class : public QObject
 
 public:
     explicit k1class(QObject *parent = nullptr);
-    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds;
-    //std::vector<std::string> path_vec;
     pcl::PointCloud<pcl::PointXYZ>::Ptr final_cloud;
-    pcl::PointCloud<pcl::PointXYZ>::Ptr filter_cloud;
     Point2Mesh p2m;
     int time, min, max;
     bool flag_start;
 
 public slots:
-    void registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds);
+    void registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> clouds);
 
 protected:
     pcl::Grabber *grabber_var;

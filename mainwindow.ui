@@ -6,51 +6,272 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>996</width>
-    <height>709</height>
+    <width>1000</width>
+    <height>733</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1000</width>
+    <height>800</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
-    <item>
-     <widget class="QGroupBox" name="groupBox">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="2">
+     <widget class="QFrame" name="frame_3">
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
       </property>
-      <property name="maximumSize">
-       <size>
-        <width>200</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="title">
-       <string>Features</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QGroupBox" name="groupBox_2">
-      <property name="title">
-       <string>Viewer</string>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QWidget" name="widget1" native="true">
+        <widget class="QVTKWidget" name="widget1" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>250</height>
+          </size>
+         </property>
          <property name="styleSheet">
           <string notr="true">background-color: rgb(170, 255, 0);</string>
          </property>
         </widget>
        </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QFrame" name="frame">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QWidget" name="widget2" native="true">
+        <widget class="QVTKWidget" name="widget2" native="true">
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(170, 255, 0);</string>
+          <string notr="true">background-color: rgb(0, 255, 255);</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="title">
+       <string>Acquisition Features</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="1" column="0">
+        <widget class="QDoubleSpinBox" name="z_axis_min"/>
+       </item>
+       <item row="3" column="0">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="0">
+        <widget class="QToolButton" name="toolButton">
+         <property name="text">
+          <string>Start 
+Acquisition</string>
+         </property>
+         <property name="icon">
+          <iconset resource="rsc.qrc">
+           <normaloff>:/icons/resource/if_player_play_6154.png</normaloff>:/icons/resource/if_player_play_6154.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextUnderIcon</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QToolButton" name="toolButton_2">
+         <property name="text">
+          <string>Stop 
+Acquisition</string>
+         </property>
+         <property name="icon">
+          <iconset resource="rsc.qrc">
+           <normaloff>:/icons/resource/if_player_stop_6158.png</normaloff>:/icons/resource/if_player_stop_6158.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextUnderIcon</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>MIN (z axis)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QDoubleSpinBox" name="z_axis_max"/>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>MAX (z axis)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="2">
+        <widget class="QToolButton" name="toolButton_4">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Load
+Aligned Points</string>
+         </property>
+         <property name="icon">
+          <iconset resource="rsc.qrc">
+           <normaloff>:/icons/resource/if_edit_user_6020.png</normaloff>:/icons/resource/if_edit_user_6020.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>48</width>
+           <height>48</height>
+          </size>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextUnderIcon</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QGroupBox" name="groupBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>200</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>Registration Features</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QComboBox" name="tri_comboBox">
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+         <property name="currentText">
+          <string>Poisson</string>
+         </property>
+         <property name="maxVisibleItems">
+          <number>2</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>Poisson</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Greedy</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QToolButton" name="toolButton_3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Create
+Triangle Mesh</string>
+         </property>
+         <property name="icon">
+          <iconset resource="rsc.qrc">
+           <normaloff>:/icons/resource/if_emerald-theme-manager_6296.png</normaloff>:/icons/resource/if_emerald-theme-manager_6296.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextUnderIcon</enum>
          </property>
         </widget>
        </item>
@@ -64,7 +285,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>996</width>
+     <width>1000</width>
      <height>21</height>
     </rect>
    </property>
@@ -73,8 +294,17 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen_file"/>
+    <addaction name="actionOpen_files"/>
+    <addaction name="actionSave_file"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -86,12 +316,64 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen_file">
+   <property name="icon">
+    <iconset resource="rsc.qrc">
+     <normaloff>:/icons/resource/if_folder_orange_open_6868.png</normaloff>
+     <normalon>:/icons/resource/if_folder_orange_open_6868.png</normalon>
+     <disabledoff>:/icons/resource/if_folder_orange_open_6868.png</disabledoff>
+     <disabledon>:/icons/resource/if_folder_orange_open_6868.png</disabledon>
+     <activeoff>:/icons/resource/if_folder_orange_open_6868.png</activeoff>
+     <activeon>:/icons/resource/if_folder_orange_open_6868.png</activeon>
+     <selectedoff>:/icons/resource/if_folder_orange_open_6868.png</selectedoff>
+     <selectedon>:/icons/resource/if_folder_orange_open_6868.png</selectedon>:/icons/resource/if_folder_orange_open_6868.png</iconset>
+   </property>
    <property name="text">
     <string>Open file</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionSave_file">
+   <property name="icon">
+    <iconset resource="rsc.qrc">
+     <normaloff>:/icons/resource/if_filesaveas_6047.png</normaloff>
+     <normalon>:/icons/resource/if_filesaveas_6047.png</normalon>:/icons/resource/if_filesaveas_6047.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save file</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="rsc.qrc">
+     <normaloff>:/icons/resource/if_info_6077.png</normaloff>:/icons/resource/if_info_6077.png</iconset>
+   </property>
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionOpen_files">
+   <property name="icon">
+    <iconset resource="rsc.qrc">
+     <normaloff>:/icons/resource/if_folder_new_6056.png</normaloff>:/icons/resource/if_folder_new_6056.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open files</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <customwidgets>
+  <customwidget>
+   <class>QVTKWidget</class>
+   <extends>QWidget</extends>
+   <header>qvtkwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="rsc.qrc"/>
+ </resources>
  <connections/>
 </ui>

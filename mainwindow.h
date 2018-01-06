@@ -18,6 +18,7 @@
 #include <QElapsedTimer>
 #include <QDoubleSpinBox>
 #include <QComboBox>
+#include <QStringList>
 
 //PCL
 #include <pcl/io/ply_io.h>
@@ -55,18 +56,23 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
-    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds_vec;
+    std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> clouds_vec;
     pcl::PolygonMesh::Ptr poly_mesh;
     Point2Mesh p2m;
     bool flag;
+
+public slots:
+    void create_k2_visualizer();
+    void k2visual();
+    void load_pcd_files(QStringList files_pcd);
 
 private slots:
     void on_actionOpen_file_triggered();
     void on_actionSave_file_triggered();
     void on_toolButton_clicked();
     void on_toolButton_2_clicked();
-    void create_k2_visualizer();
     void on_toolButton_3_clicked();
+    void on_actionOpen_files_triggered();
 
 private:
     Ui::MainWindow *ui;

@@ -1,21 +1,19 @@
 #include "k1class.h"
 
 k1class::k1class(QObject *parent) : QObject(parent),
-    clouds (0),
     time (0),
     min (0),
     max (0),
     final_cloud (new pcl::PointCloud<pcl::PointXYZ>),
-    filter_cloud (new pcl::PointCloud<pcl::PointXYZ>),
     flag_start(false)
 {
 }
 
 //Function for registration step
-void k1class::registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds)
+void k1class::registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> clouds)
 {
 
-    pcl::PointCloud<pcl::PointXYZ>::ConstPtr c1, c2;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr c1, c2;
     Eigen::Matrix4f transf_m = Eigen::Matrix4f::Identity (), transf2p2;
 
     for (int i = 1; i < clouds.size(); i++)
@@ -23,13 +21,20 @@ void k1class::registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr>
         c1 = clouds.at(i-1);
         c2 = clouds.at(i);
 
-        pcl::PointCloud<pcl::PointXYZ>::Ptr tmp (new pcl::PointCloud<pcl::PointXYZ>);
+        std::vector<int> index;
+        pcl::removeNaNFromPointCloud(*c1,*c1, index);
+        index.clear();
+        pcl::removeNaNFromPointCloud(*c2,*c2, index);
+
+        pcl::PointCloud<pcl::PointXYZ>::Ptr tmp (new pcl::PointCloud<pcl::PointXYZ>());
 
         p2m.estimate_align(c1, c2, tmp, transf2p2, true);
 
         pcl::transformPointCloud (*tmp, *final_cloud, transf_m);
         transf_m = transf_m * transf2p2;
     }
+
+    qDebug() << "Finished the estimate_align";
 
     p2m.filtering (final_cloud);
 

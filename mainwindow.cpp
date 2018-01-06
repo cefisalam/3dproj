@@ -15,11 +15,22 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowTitle("3D-V2 Scanner");
     viewer.reset (new pcl::visualization::PCLVisualizer ("viewer", false));
     viewer2.reset (new pcl::visualization::PCLVisualizer ("viewer2", false));
+    kinect = new k1class();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::load_pcd_files(QStringList files_pcd)
+{
+    for (int i = 0; i < files_pcd.size(); i++)
+    {
+        pcl::PointCloud<pcl::PointXYZ>::Ptr pcd (new pcl::PointCloud<pcl::PointXYZ>());
+        pcl::io::loadPCDFile(files_pcd.at(i).toStdString(), *pcd);
+        clouds_vec.push_back(pcd);
+    }
 }
 
 //Function to load all kinds of point clouds/mesh (ply, vtk, obj, pcd)
@@ -116,7 +127,7 @@ void MainWindow::on_actionSave_file_triggered()
     if (flag_type == -1)
     {
         QMessageBox msg;
-        msg.setInformativeText("None file to be save");
+        msg.setInformativeText("No file to be save");
         msg.exec();
     }
 
@@ -149,12 +160,13 @@ void MainWindow::on_actionSave_file_triggered()
     }
 }
 
+//Function to open PCL visualizer into QVTK (need to fix)
 void MainWindow::create_k2_visualizer()
 {
-    kinect = new k1class();
+
     ui->widget1->SetRenderWindow (viewer->getRenderWindow());
     viewer->setCameraPosition( 0.0, 0.0, -2.5, 0.0, 0.0, 0.0 );
-    viewer->setupInteractor (ui->widget1->GetInteractor(), ui->widget1->GetRenderWindow());
+
 
     boost::mutex mt;
     pcl::PointCloud<pcl::PointXYZ>::ConstPtr local_cloud;
@@ -172,7 +184,7 @@ void MainWindow::create_k2_visualizer()
     grabber_var->start();
 
     int time = 0;
-    while (time < 90)
+    while (time < 190)
     {
         boost::mutex::scoped_try_lock lock_mutex2 (mt);
         if( lock_mutex2.owns_lock() && local_cloud)
@@ -192,21 +204,34 @@ void MainWindow::create_k2_visualizer()
                 }
 
                 viewer->addPointCloud(local_cloud, "cloud");
+
             }
+            viewer->setupInteractor (ui->widget1->GetInteractor(), ui->widget1->GetRenderWindow());
             ui->widget1->update();
-            clouds_vec.push_back(local_cloud);
+            clouds_vec.push_back(local_cloud->makeShared());
+            std::cout << "time: " << time << std::endl;
             time++;
         }
-
     }
 
     grabber_var->stop();
+    std::cout << "CLOUDS: " << clouds_vec.size() << std::endl;
+}
+
+void MainWindow::k2visual()
+{
+    k2 = new k2class();
+    k2->init(clouds_vec);
+
+    std::cout << "CLOUDS_SIZE: " << clouds_vec.size() << std::endl;
+
+    k2->registration(clouds_vec);
 }
 
 void MainWindow::on_toolButton_clicked()
 {
     flag = true;
-    create_k2_visualizer();
+    k2visual();
 }
 
 void MainWindow::on_toolButton_2_clicked()
@@ -222,10 +247,23 @@ void MainWindow::on_toolButton_3_clicked()
         {
             *poly_mesh = p2m.point2mesh(cloud, ui->tri_comboBox->currentIndex());
             ui->widget2->SetRenderWindow (viewer2->getRenderWindow());
-            viewer2->setCameraPosition( 0.0, 0.0, -2.5, 0.0, 0.0, 0.0 );
+            viewer2->setCameraPosition( 0.0, 0.0, 2.5, 0.0, 0.0, 0.0 );
             viewer2->setupInteractor (ui->widget2->GetInteractor(), ui->widget2->GetRenderWindow());
-            viewer->addPolygonMesh(*poly_mesh, "meshes");
-            ui->widget2->update();
+
+            if (viewer2->removeAllShapes())
+            {
+                viewer2->addPolygonMesh(*poly_mesh, "meshes");
+                ui->widget2->update();
+            }
         }
     }
+}
+
+void MainWindow::on_actionOpen_files_triggered()
+{
+    QStringList files_pcd = QFileDialog::getOpenFileNames(this, tr("Open mesh file"),
+                                                          "C:/",
+                                                          tr("Meshes *.ply *.obj *.vtk *.pcd *.stl"));
+    load_pcd_files(files_pcd);
+    kinect->registration(clouds_vec);
 }

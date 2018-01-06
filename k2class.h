@@ -31,7 +31,6 @@ class k2class : public QObject
     Q_OBJECT
 public:
     explicit k2class(QObject *parent = nullptr);
-    boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
     std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds;
     pcl::PointCloud<pcl::PointXYZ>::Ptr final_cloud;
     Point2Mesh p2m;
@@ -40,7 +39,8 @@ public:
 signals:
 
 public slots:
-    void registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds);
+    void registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> clouds);
+    void init(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> clouds);
 };
 
 #endif // K2CLASS_H

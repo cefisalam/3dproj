@@ -60,9 +60,9 @@ pcl::PolygonMesh Point2Mesh::point2mesh (pcl::PointCloud<pcl::PointXYZ>::Ptr clo
     else
     {
         pcl::GreedyProjectionTriangulation<pcl::PointNormal> greedy;
-        greedy.setSearchRadius (0.005);
-        greedy.setMu (3.5);
-        greedy.setMaximumNearestNeighbors (50);
+        greedy.setSearchRadius (0.02);
+        greedy.setMu (2.5);
+        greedy.setMaximumNearestNeighbors (150);
         greedy.setMaximumSurfaceAngle(M_PI/4);
         greedy.setMinimumAngle(M_PI/18);
         greedy.setMaximumAngle(2*M_PI/3);
@@ -79,8 +79,8 @@ pcl::PolygonMesh Point2Mesh::point2mesh (pcl::PointCloud<pcl::PointXYZ>::Ptr clo
     return triangles;
 }
 
-void Point2Mesh::estimate_align (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud1,
-                                 pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud2,
+void Point2Mesh::estimate_align (const pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud1,
+                                 const pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud2,
                                  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_final,
                                  Eigen::Matrix4f &transf_m,
                                  bool flag)
@@ -114,10 +114,11 @@ void Point2Mesh::estimate_align (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud1
     calc_normals(c1, normal_c1);
     calc_normals(c2, normal_c2);
 
+
     //new_point.setRescaleValues (init_values);
 
     pcl::IterativeClosestPointNonLinear<pcl::PointNormal, pcl::PointNormal> icp;
-    icp.setTransformationEpsilon (1e-8);
+    icp.setTransformationEpsilon (1e-6);
     icp.setMaxCorrespondenceDistance (0.1);
     icp.setPointRepresentation (boost::make_shared<const PointA> (new_point));
 
@@ -129,10 +130,11 @@ void Point2Mesh::estimate_align (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud1
     pcl::PointCloud<pcl::PointNormal>::Ptr icp_res = normal_c1;
     icp.setMaximumIterations(2);
 
+    qDebug() << "Finished the estimate_align2";
+
     for (int i = 0; i < 30; i++)
     {
         normal_c1 = icp_res;
-
         icp.setInputSource(normal_c1);
         icp.align(*icp_res);
 
