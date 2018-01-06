@@ -3,14 +3,21 @@
 
 //Internal
 #include "point2mesh.h"
+#include "k1class.h"
+#include "k2class.h"
 
 //Qt
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QDebug>
 #include <QWidget>
 #include <QGroupBox>
 #include <QScrollArea>
+#include <QToolButton>
+#include <QElapsedTimer>
+#include <QDoubleSpinBox>
+#include <QComboBox>
 
 //PCL
 #include <pcl/io/ply_io.h>
@@ -19,6 +26,9 @@
 #include <pcl/io/vtk_lib_io.h>
 #include <pcl/io/io.h>
 #include <pcl/surface/vtk_smoothing/vtk_utils.h>
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+#include <pcl/visualization/pcl_visualizer.h>
 
 //VTK
 #include <QVTKWidget.h>
@@ -26,6 +36,12 @@
 #include <vtkSmartPointer.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
+#include <vtkAutoInit.h>
+
+VTK_MODULE_INIT(vtkRenderingOpenGL2)
+VTK_MODULE_INIT(vtkInteractionStyle)
+VTK_MODULE_INIT(vtkRenderingFreeType)
 
 namespace Ui {
 class MainWindow;
@@ -38,16 +54,31 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    //pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
-    //pcl::PCLPointCloud2 cloud;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
+    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds_vec;
     pcl::PolygonMesh::Ptr poly_mesh;
     Point2Mesh p2m;
+    bool flag;
 
 private slots:
     void on_actionOpen_file_triggered();
+    void on_actionSave_file_triggered();
+    void on_toolButton_clicked();
+    void on_toolButton_2_clicked();
+    void create_k2_visualizer();
+    void on_toolButton_3_clicked();
 
 private:
     Ui::MainWindow *ui;
+    QVTKWidget *widget1, *widget2;
+    boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
+    boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer2;
+    int flag_type = -1;
+    k1class *kinect;
+    k2class *k2;
+    QToolButton *toolButton;
+    QDoubleSpinBox *z_axis_min, *z_axis_max;
+    QComboBox *tri_comboBox;
 };
 
 #endif // MAINWINDOW_H

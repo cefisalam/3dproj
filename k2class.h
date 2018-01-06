@@ -35,11 +35,11 @@ public:
     std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds;
     pcl::PointCloud<pcl::PointXYZ>::Ptr final_cloud;
     Point2Mesh p2m;
+    int time;
 
 signals:
 
 public slots:
-    void init();
     void registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds);
 };
 

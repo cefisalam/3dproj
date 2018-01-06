@@ -17,50 +17,66 @@ void Point2Mesh::calc_normals(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
     pcl::copyPointCloud (*cloud, *pc_normals);
 }
 
-void Point2Mesh::point2mesh (pcl::PCLPointCloud2 cloud)
+void Point2Mesh::filtering (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)
+{
+
+    pcl::StatisticalOutlierRemoval<pcl::PointXYZ>::Ptr filter (new pcl::StatisticalOutlierRemoval<pcl::PointXYZ>());
+    filter->setInputCloud (cloud);
+    filter->setMeanK (10);
+    filter->setStddevMulThresh (1.0);
+    filter->filter (*cloud);
+}
+
+pcl::PolygonMesh Point2Mesh::point2mesh (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_pcl, int type)
 {
     pcl::PointCloud<pcl::Normal>::Ptr normal (new pcl::PointCloud<pcl::Normal>);
     pcl::PointCloud<pcl::PointNormal>::Ptr normal_pc (new pcl::PointCloud<pcl::PointNormal>);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_pcl (new pcl::PointCloud<pcl::PointXYZ>);
+    //pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_pcl (new pcl::PointCloud<pcl::PointXYZ>);
     pcl::PolygonMesh triangles;
     pcl::search::KdTree<pcl::PointXYZ>::Ptr kdtree (new pcl::search::KdTree<pcl::PointXYZ>);
     pcl::search::KdTree<pcl::PointNormal>::Ptr kdtreeN (new pcl::search::KdTree<pcl::PointNormal>);
-    pcl::GreedyProjectionTriangulation<pcl::PointNormal> greedy;
 
-    pcl::fromPCLPointCloud2 (cloud, *cloud_pcl);
+    //pcl::fromPCLPointCloud2 (cloud, *cloud_pcl);
 
     //Normal estimation
     pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> normal_est;
     kdtree->setInputCloud(cloud_pcl);
     normal_est.setInputCloud(cloud_pcl);
     normal_est.setSearchMethod(kdtree);
-    normal_est.setKSearch(10);
+    normal_est.setKSearch(30);
     normal_est.compute(*normal);
 
     pcl::concatenateFields(*cloud_pcl, *normal, *normal_pc);
     kdtreeN->setInputCloud(normal_pc);
 
-    greedy.setSearchRadius (0.025);
-    greedy.setMu (2.5);
-    greedy.setMaximumNearestNeighbors (100);
-    greedy.setMaximumSurfaceAngle(M_PI/4);
-    greedy.setMinimumAngle(M_PI/18);
-    greedy.setMaximumAngle(2*M_PI/3);
-    greedy.setNormalConsistency(false);
-    greedy.setInputCloud (normal_pc);
-    greedy.setSearchMethod (kdtreeN);
-    greedy.reconstruct (triangles);
+    if (type == 0)
+    {
+        pcl::Poisson<pcl::PointNormal> poisson;
+        poisson.setDepth(9);
+        poisson.setInputCloud(normal_pc);
+        poisson.reconstruct(triangles);
+    }
 
-    std::vector<int> parts = greedy.getPartIDs();
-    std::vector<int> states = greedy.getPointStates();
-
-    std::cout << "PARTS: " << parts.size() << std::endl;
-    std::cout << "STATES: " << states.size() << std::endl;
+    else
+    {
+        pcl::GreedyProjectionTriangulation<pcl::PointNormal> greedy;
+        greedy.setSearchRadius (0.005);
+        greedy.setMu (3.5);
+        greedy.setMaximumNearestNeighbors (50);
+        greedy.setMaximumSurfaceAngle(M_PI/4);
+        greedy.setMinimumAngle(M_PI/18);
+        greedy.setMaximumAngle(2*M_PI/3);
+        greedy.setNormalConsistency(false);
+        greedy.setInputCloud (normal_pc);
+        greedy.setSearchMethod (kdtreeN);
+        greedy.reconstruct (triangles);
+    }
 
     std::string str = "teste2.stl";
     pcl::io::savePolygonFileSTL(str, triangles, true);
 
     std::cout << "FINSHED TRIANGLE" << std::endl;
+    return triangles;
 }
 
 void Point2Mesh::estimate_align (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud1,
@@ -98,11 +114,11 @@ void Point2Mesh::estimate_align (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud1
     calc_normals(c1, normal_c1);
     calc_normals(c2, normal_c2);
 
-    new_point.setRescaleValues (init_values);
+    //new_point.setRescaleValues (init_values);
 
     pcl::IterativeClosestPointNonLinear<pcl::PointNormal, pcl::PointNormal> icp;
-    icp.setTransformationEpsilon (1e-6);
-    icp.setMaxCorrespondenceDistance (0.2);
+    icp.setTransformationEpsilon (1e-8);
+    icp.setMaxCorrespondenceDistance (0.1);
     icp.setPointRepresentation (boost::make_shared<const PointA> (new_point));
 
     icp.setInputSource (normal_c1);
@@ -132,9 +148,7 @@ void Point2Mesh::estimate_align (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud1
     }
 
     trgt = m_identity.inverse();
-
     pcl::transformPointCloud(*cloud2, *cloud_final, trgt);
-    //std::cout << "Here" << std::endl;
 
     *cloud_final += *cloud1;
     transf_m = trgt;

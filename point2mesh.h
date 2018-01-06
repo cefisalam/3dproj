@@ -23,6 +23,8 @@
 #include <pcl/common/time.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/filters/filter.h>
+#include <pcl/filters/median_filter.h>
+#include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/registration/icp.h>
 #include <pcl/registration/icp_nl.h>
 #include <pcl/registration/transforms.h>
@@ -35,6 +37,8 @@
 #include <pcl/registration/default_convergence_criteria.h>
 #include <pcl/kdtree/kdtree_flann.h>
 #include <pcl/surface/gp3.h>
+#include <pcl/surface/mls.h>
+#include <pcl/surface/poisson.h>
 
 
 class Point2Mesh : public QObject
@@ -53,7 +57,8 @@ public slots:
                          pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_final,
                          Eigen::Matrix4f &transf_m, bool flag);
 
-    void point2mesh (pcl::PCLPointCloud2 cloud);
+    pcl::PolygonMesh point2mesh (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_pcl, int type);
+    void filtering (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
 };
 
 #endif // POINT2MESH_H

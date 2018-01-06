@@ -6,62 +6,9 @@ k2class::k2class(QObject *parent) : QObject(parent),
     viewer (new pcl::visualization::PCLVisualizer ("Viewer 2")),
     clouds (0),
     p2m (nullptr),
+    time(0),
     final_cloud (new pcl::PointCloud<pcl::PointXYZ>)
 {
-}
-
-void k2class::init ()
-{
-
-    boost::mutex mt;
-    boost::shared_ptr<pcl::Grabber> grabber = boost::make_shared<pcl::Kinect2Grabber>();
-    pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud;
-
-    viewer->setCameraPosition( 0.0, 0.0, -2.5, 0.0, 0.0, 0.0 );
-    boost::function<void( const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& )> func_cb =
-            [&cloud, &mt, this]( const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& ptr)
-    {
-        boost::mutex::scoped_lock lock(mt);
-        cloud = ptr->makeShared();
-    };
-
-
-    boost::signals2::connection conn = grabber->registerCallback(func_cb);
-
-    grabber->start();
-
-    while (!viewer->wasStopped())
-    {
-        viewer->spinOnce();
-
-        boost::mutex::scoped_try_lock lock_mutex2 (mt);
-        if( lock_mutex2.owns_lock() && cloud){
-
-            int time = 0;
-
-            pcl::PointCloud<pcl::PointXYZ>::Ptr filter_cloud (new pcl::PointCloud<pcl::PointXYZ>);
-            pcl::PassThrough<pcl::PointXYZ> filter;
-            filter.setInputCloud(cloud);
-            filter.setFilterFieldName("z");
-            filter.setFilterLimits(0.0, 1.0);
-            filter.filter(*filter_cloud);
-
-            std::stringstream ss;
-            ss << time << ".ply";
-            pcl::io::savePCDFile(ss.str(), *filter_cloud, true);
-
-            clouds.push_back(filter_cloud);
-            time++;
-
-            if(!viewer->updatePointCloud(cloud, "cloud")){
-                viewer->addPointCloud(cloud, "cloud");
-            }
-
-            //time++;
-        }
-    }
-
-    grabber->stop ();
 }
 
 void k2class::registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds)

@@ -6,6 +6,9 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_representation.h>
 
+/*Class create to manage another kind of point, for registragion step.
+This point preserves the normal values onto 3 axis + curvarure value
+of each point*/
 class PointA : public pcl::PointRepresentation <pcl::PointNormal>
 {
   using pcl::PointRepresentation<pcl::PointNormal>::nr_dimensions_;
