@@ -40,6 +40,7 @@ void MainWindow::on_actionOpen_file_triggered()
     boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer2;
     viewer.reset (new pcl::visualization::PCLVisualizer ("viewer", false));
     viewer2.reset (new pcl::visualization::PCLVisualizer ("viewer2", false));
+    viewer->setCameraPosition( 0.0, 0.0, -2.5, 0.0 , 0.0 , 0.0 );
 
     QString file_path = QFileDialog::getOpenFileName(this, tr("Open mesh file"),
                                                      "C:/",
@@ -78,9 +79,9 @@ void MainWindow::on_actionOpen_file_triggered()
         }
     }
 
-    else if (QString(".obj").compare(file_path.mid(file_path.size()-4,4), Qt::CaseInsensitive) == 0)
+    else if (QString(".stl").compare(file_path.mid(file_path.size()-4,4), Qt::CaseInsensitive) == 0)
     {
-        if (pcl::io::loadPolygonFileOBJ(file_path.toStdString(), *poly_mesh) != -1)
+        if (pcl::io::loadPolygonFileSTL(file_path.toStdString(), *poly_mesh) != -1)
         {
             ui->widget1->SetRenderWindow (viewer->getRenderWindow());
             viewer->setupInteractor (ui->widget1->GetInteractor(), ui->widget1->GetRenderWindow());
@@ -154,8 +155,8 @@ void MainWindow::on_actionSave_file_triggered()
     else if (flag_type == 2)
     {
         QString file_name = QFileDialog::getSaveFileName(this, tr("Save file"), "",
-                                                         tr("OBJ (*.obj)"));
-        pcl::io::saveOBJFile(file_name.toStdString(), *poly_mesh);
+                                                         tr("STL (*.stl)"));
+        pcl::io::savePolygonFileSTL(file_name.toStdString(), *poly_mesh);
     }
 
     else if (flag_type == 3)
@@ -182,8 +183,27 @@ void MainWindow::on_toolButton_clicked()
         local_cloud = ptr->makeShared();
     };
 
-    pcl::Grabber *grabber = new pcl::io::OpenNI2Grabber();
-    //boost::shared_ptr<pcl::Grabber> grabber = boost::make_shared<pcl::Kinect2Grabber>();
+    boost::function<void( const pcl::visualization::KeyboardEvent& )> key_func =
+            [&local_cloud, &mt]( const pcl::visualization::KeyboardEvent& event ){
+        if( event.getKeySym() == "s" && event.keyDown() ){
+            boost::mutex::scoped_lock lock( mt );
+
+            pcl::VoxelGrid<pcl::PointXYZ> grid;
+            grid.setLeafSize (0.005, 0.005, 0.005);
+            grid.setInputCloud (local_cloud);
+            grid.filter (*local_cloud->makeShared());
+
+            static uint32_t count = 0;
+            std::ostringstream str_file;
+            str_file << std::setfill( '0' ) << std::setw( 3 ) << count++;
+            std::cout << str_file.str() + ".pcd\n";
+            pcl::io::savePCDFile( str_file.str() + ".pcd", *local_cloud, false );
+        }
+    };
+
+    viewer->registerKeyboardCallback(key_func);
+
+    boost::shared_ptr<pcl::Grabber> grabber = boost::make_shared<pcl::Kinect2Grabber>();
     boost::signals2::connection conn = grabber->registerCallback(func_cb);
     grabber->start();
 
@@ -194,22 +214,14 @@ void MainWindow::on_toolButton_clicked()
         boost::mutex::scoped_try_lock lock (mt);
         if(lock.owns_lock() && local_cloud)
         {
-            pcl::PassThrough<pcl::PointXYZ> filter;
-            filter.setInputCloud(local_cloud);
-            filter.setFilterFieldName("z");
-            filter.setFilterLimits(0.0, 1.0);
-            filter.filter(*local_cloud->makeShared());
 
             if (!viewer->updatePointCloud(local_cloud, "cloud"))
             {
                 viewer->addPointCloud(local_cloud, "cloud");
             }
+
+            clouds_vec.push_back(local_cloud->makeShared());
         }
-        clouds_vec.push_back(local_cloud->makeShared());
-        std::stringstream ss1;
-        ss1 << i << ".pcd";
-        pcl::io::savePCDFile(ss1.str(), *local_cloud->makeShared(), true);
-        i++;
     }
 
     grabber->stop();

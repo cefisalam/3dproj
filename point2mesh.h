@@ -1,11 +1,11 @@
 #ifndef POINT2MESH_H
 #define POINT2MESH_H
 
-#include "pointa.h"
-
+//Qt
 #include <QObject>
 #include <QDebug>
 
+//PCL
 #include <boost/make_shared.hpp>
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>

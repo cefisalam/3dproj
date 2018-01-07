@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.9.3
+** Created by: Qt User Interface Compiler version 5.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -314,31 +314,31 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", Q_NULLPTR));
-        actionOpen_file->setText(QApplication::translate("MainWindow", "Open file", Q_NULLPTR));
-        actionSave_file->setText(QApplication::translate("MainWindow", "Save file", Q_NULLPTR));
-        actionAbout->setText(QApplication::translate("MainWindow", "About", Q_NULLPTR));
-        actionOpen_files->setText(QApplication::translate("MainWindow", "Open files", Q_NULLPTR));
-        groupBox_2->setTitle(QApplication::translate("MainWindow", "Acquisition Features", Q_NULLPTR));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
+        actionOpen_file->setText(QApplication::translate("MainWindow", "Open file", 0));
+        actionSave_file->setText(QApplication::translate("MainWindow", "Save file", 0));
+        actionAbout->setText(QApplication::translate("MainWindow", "About", 0));
+        actionOpen_files->setText(QApplication::translate("MainWindow", "Open files", 0));
+        groupBox_2->setTitle(QApplication::translate("MainWindow", "Acquisition Features", 0));
         toolButton->setText(QApplication::translate("MainWindow", "Start \n"
-"Acquisition", Q_NULLPTR));
+"Acquisition", 0));
         toolButton_2->setText(QApplication::translate("MainWindow", "Stop \n"
-"Acquisition", Q_NULLPTR));
-        label->setText(QApplication::translate("MainWindow", "MIN (z axis)", Q_NULLPTR));
-        label_2->setText(QApplication::translate("MainWindow", "MAX (z axis)", Q_NULLPTR));
+"Acquisition", 0));
+        label->setText(QApplication::translate("MainWindow", "MIN (z axis)", 0));
+        label_2->setText(QApplication::translate("MainWindow", "MAX (z axis)", 0));
         toolButton_4->setText(QApplication::translate("MainWindow", "Load\n"
-"Aligned Points", Q_NULLPTR));
-        groupBox->setTitle(QApplication::translate("MainWindow", "Registration Features", Q_NULLPTR));
+"Aligned Points", 0));
+        groupBox->setTitle(QApplication::translate("MainWindow", "Registration Features", 0));
         tri_comboBox->clear();
         tri_comboBox->insertItems(0, QStringList()
-         << QApplication::translate("MainWindow", "Poisson", Q_NULLPTR)
-         << QApplication::translate("MainWindow", "Greedy", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Poisson", 0)
+         << QApplication::translate("MainWindow", "Greedy", 0)
         );
-        tri_comboBox->setCurrentText(QApplication::translate("MainWindow", "Poisson", Q_NULLPTR));
+        tri_comboBox->setCurrentText(QApplication::translate("MainWindow", "Poisson", 0));
         toolButton_3->setText(QApplication::translate("MainWindow", "Create\n"
-"Triangle Mesh", Q_NULLPTR));
-        menuFile->setTitle(QApplication::translate("MainWindow", "File", Q_NULLPTR));
-        menuHelp->setTitle(QApplication::translate("MainWindow", "Help", Q_NULLPTR));
+"Triangle Mesh", 0));
+        menuFile->setTitle(QApplication::translate("MainWindow", "File", 0));
+        menuHelp->setTitle(QApplication::translate("MainWindow", "Help", 0));
     } // retranslateUi
 
 };

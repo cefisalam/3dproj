@@ -17,7 +17,7 @@ INCLUDEPATH += "C:\Program Files\PCL 1.8.0\3rdParty\Boost\include\boost-1_61"
 INCLUDEPATH += "C:\Program Files\PCL 1.8.0\3rdParty\Qhull\include"
 INCLUDEPATH += "C:\Program Files\PCL 1.8.0\3rdParty\FLANN\include"
 INCLUDEPATH += "C:\Program Files\PCL 1.8.0\3rdParty\Eigen\eigen3"
-INCLUDEPATH += "C:\Program Files\VTK-7\include\vtk-7.0"
+INCLUDEPATH += "C:\Program Files\VTK\include\vtk-7.0"
 INCLUDEPATH += "C:\Program Files\OpenNI2\Include"
 INCLUDEPATH += "C:\Program Files\Microsoft SDKs\Kinect\v2.0_1409\inc"
 INCLUDEPATH += "C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\um"
@@ -30,8 +30,8 @@ LIBS += "-LC:\Program Files\PCL 1.8.0\lib"
 LIBS += "-LC:\Program Files\PCL 1.8.0\3rdParty\Qhull\lib"
 LIBS += "-LC:\Program Files\PCL 1.8.0\3rdParty\FLANN\lib"
 LIBS += "-LC:\Program Files\PCL 1.8.0\3rdParty\Boost\lib"
-LIBS += "-LC:\Program Files\VTK-7\lib"
-LIBS += "-LC:\Program Files\VTK-7\bin"
+LIBS += "-LC:\Program Files\VTK\lib"
+LIBS += "-LC:\Program Files\VTK\bin"
 LIBS += "-LC:\Program Files\OpenNI2\Lib"
 LIBS += "-LC:\Program Files\OpenNI2\Tools"
 LIBS += "-LC:\Program Files\OpenNI2\Tools\OpenNI2\Drivers"
@@ -263,7 +263,6 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     point2mesh.h \
-    pointa.h \
     k2class.h \
     kinect2_grabber.h
 

@@ -22,7 +22,6 @@ void Point2Mesh::calc_normals(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
 //Function for filtering image using StatisticalOutlierRemoval
 void Point2Mesh::filtering (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)
 {
-
     pcl::StatisticalOutlierRemoval<pcl::PointXYZ>::Ptr filter (new pcl::StatisticalOutlierRemoval<pcl::PointXYZ>());
     filter->setInputCloud (cloud);
     filter->setMeanK (10);
@@ -95,12 +94,10 @@ void Point2Mesh::estimate_align (const pcl::PointCloud<pcl::PointXYZ>::Ptr &clou
     pcl::PointCloud<pcl::PointNormal>::Ptr normal_c1 (new pcl::PointCloud<pcl::PointNormal>);
     pcl::PointCloud<pcl::PointNormal>::Ptr normal_c2 (new pcl::PointCloud<pcl::PointNormal>);
     pcl::VoxelGrid<pcl::PointXYZ> grid;
-    PointA new_point;
-    float init_values [4] = {1.0, 1.0, 1.0, 1.0};
 
     if (flag == true)
     {
-        grid.setLeafSize (0.05, 0.05, 0.05);
+        grid.setLeafSize (0.005, 0.005, 0.005);
         grid.setInputCloud (cloud1);
         grid.filter (*c1);
 
@@ -117,22 +114,17 @@ void Point2Mesh::estimate_align (const pcl::PointCloud<pcl::PointXYZ>::Ptr &clou
     calc_normals(c1, normal_c1);
     calc_normals(c2, normal_c2);
 
-
-    new_point.setRescaleValues (init_values);
-
     pcl::IterativeClosestPointNonLinear<pcl::PointNormal, pcl::PointNormal> icp;
     icp.setTransformationEpsilon (1e-6);
     icp.setMaxCorrespondenceDistance (0.5);
     icp.setRANSACOutlierRejectionThreshold(0.03);
-    icp.setPointRepresentation (boost::make_shared<const PointA> (new_point));
-
     icp.setInputSource (normal_c1);
     icp.setInputTarget (normal_c2);
 
     Eigen::Matrix4f m_identity = Eigen::Matrix4f::Identity();
     Eigen::Matrix4f previous, trgt;
     pcl::PointCloud<pcl::PointNormal>::Ptr icp_res = normal_c1;
-    icp.setMaximumIterations(2);
+    icp.setMaximumIterations(20);
 
     for (int i = 0; i < 30; i++)
     {
