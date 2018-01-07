@@ -24,6 +24,7 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QToolButton>
@@ -61,6 +62,7 @@ public:
     QGroupBox *groupBox;
     QVBoxLayout *verticalLayout_3;
     QComboBox *tri_comboBox;
+    QSpinBox *poisonSpinBox;
     QSpacerItem *verticalSpacer_2;
     QToolButton *toolButton_3;
     QMenuBar *menuBar;
@@ -247,17 +249,30 @@ public:
 
         verticalLayout_3->addWidget(tri_comboBox);
 
+        poisonSpinBox = new QSpinBox(groupBox);
+        poisonSpinBox->setObjectName(QStringLiteral("poisonSpinBox"));
+        poisonSpinBox->setEnabled(true);
+        QSizePolicy sizePolicy5(QSizePolicy::Maximum, QSizePolicy::Fixed);
+        sizePolicy5.setHorizontalStretch(0);
+        sizePolicy5.setVerticalStretch(0);
+        sizePolicy5.setHeightForWidth(poisonSpinBox->sizePolicy().hasHeightForWidth());
+        poisonSpinBox->setSizePolicy(sizePolicy5);
+        poisonSpinBox->setMinimum(1);
+        poisonSpinBox->setMaximum(40);
+
+        verticalLayout_3->addWidget(poisonSpinBox);
+
         verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout_3->addItem(verticalSpacer_2);
 
         toolButton_3 = new QToolButton(groupBox);
         toolButton_3->setObjectName(QStringLiteral("toolButton_3"));
-        QSizePolicy sizePolicy5(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-        sizePolicy5.setHorizontalStretch(0);
-        sizePolicy5.setVerticalStretch(0);
-        sizePolicy5.setHeightForWidth(toolButton_3->sizePolicy().hasHeightForWidth());
-        toolButton_3->setSizePolicy(sizePolicy5);
+        QSizePolicy sizePolicy6(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(0);
+        sizePolicy6.setHeightForWidth(toolButton_3->sizePolicy().hasHeightForWidth());
+        toolButton_3->setSizePolicy(sizePolicy6);
         QIcon icon7;
         icon7.addFile(QStringLiteral(":/icons/resource/if_emerald-theme-manager_6296.png"), QSize(), QIcon::Normal, QIcon::Off);
         toolButton_3->setIcon(icon7);

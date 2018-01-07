@@ -71,7 +71,6 @@ private slots:
     void on_toolButton_2_clicked();
     void on_toolButton_3_clicked();
     void on_actionOpen_files_triggered();
-
     void on_toolButton_4_clicked();
 
 private:
@@ -81,6 +80,7 @@ private:
     QToolButton *toolButton;
     QDoubleSpinBox *z_axis_min, *z_axis_max;
     QComboBox *tri_comboBox;
+    QSpinBox *poisonSpinBox;
 
 protected:
     boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer1;

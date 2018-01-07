@@ -58,7 +58,7 @@ public slots:
                          Eigen::Matrix4f &transf_m,
                          bool flag);
 
-    void point2mesh (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_pcl, int type);
+    void point2mesh (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_pcl, int type, int depth);
     void filtering (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
 };
 

@@ -31,7 +31,7 @@ void Point2Mesh::filtering (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)
 }
 
 //Function to perform triangulation (Poison/Greedy) into point cloud
-void Point2Mesh::point2mesh (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_pcl, int type)
+void Point2Mesh::point2mesh (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_pcl, int type, int depth)
 {
     pcl::PointCloud<pcl::Normal>::Ptr normal (new pcl::PointCloud<pcl::Normal>);
     pcl::PointCloud<pcl::PointNormal>::Ptr normal_pc (new pcl::PointCloud<pcl::PointNormal>);
@@ -54,7 +54,7 @@ void Point2Mesh::point2mesh (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_pcl, int 
     {
         qDebug() << "Poison";
         pcl::Poisson<pcl::PointNormal> poisson;
-        poisson.setDepth(9);
+        poisson.setDepth(depth);
         poisson.setInputCloud(normal_pc);
         poisson.reconstruct(triangles);
     }
@@ -122,7 +122,8 @@ void Point2Mesh::estimate_align (const pcl::PointCloud<pcl::PointXYZ>::Ptr &clou
 
     pcl::IterativeClosestPointNonLinear<pcl::PointNormal, pcl::PointNormal> icp;
     icp.setTransformationEpsilon (1e-6);
-    icp.setMaxCorrespondenceDistance (0.1);
+    icp.setMaxCorrespondenceDistance (0.5);
+    icp.setRANSACOutlierRejectionThreshold(0.03);
     icp.setPointRepresentation (boost::make_shared<const PointA> (new_point));
 
     icp.setInputSource (normal_c1);
@@ -139,7 +140,9 @@ void Point2Mesh::estimate_align (const pcl::PointCloud<pcl::PointXYZ>::Ptr &clou
         icp.setInputSource(normal_c1);
         icp.align(*icp_res);
 
+
         m_identity = icp.getFinalTransformation() * m_identity;
+
 
         if (fabs ((icp.getLastIncrementalTransformation () -
                    previous).sum ()) < icp.getTransformationEpsilon ())
@@ -155,6 +158,4 @@ void Point2Mesh::estimate_align (const pcl::PointCloud<pcl::PointXYZ>::Ptr &clou
 
     *cloud_final += *cloud1;
     transf_m = trgt;
-
-    qDebug() << "Finished the estimate_align";
 }

@@ -154,7 +154,6 @@ LIBS += -lvtkViewsCore-7.0
 LIBS += -lvtkRenderingOpenGL2-7.0
 LIBS += -lvtkInteractionWidgets-7.0
 LIBS += -lvtkIOMINC-7.0
-LIBS += -lvtkTestingRendering-7.0
 LIBS += -lvtkChartsCore-7.0
 LIBS += -lvtkIOImport-7.0
 LIBS += -lvtkRenderingImage-7.0

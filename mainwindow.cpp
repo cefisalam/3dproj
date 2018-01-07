@@ -197,20 +197,19 @@ void MainWindow::on_toolButton_clicked()
             pcl::PassThrough<pcl::PointXYZ> filter;
             filter.setInputCloud(local_cloud);
             filter.setFilterFieldName("z");
-            filter.setFilterLimits(-10.5f,-5.0f);
+            filter.setFilterLimits(0.0, 1.0);
             filter.filter(*local_cloud->makeShared());
 
             if (!viewer->updatePointCloud(local_cloud, "cloud"))
             {
                 viewer->addPointCloud(local_cloud, "cloud");
             }
-
-            clouds_vec.push_back(local_cloud->makeShared());
-            std::stringstream ss1;
-            ss1 << i << ".pcd";
-            pcl::io::savePCDFile(ss1.str(), *local_cloud->makeShared(), true);
-            i++;
         }
+        clouds_vec.push_back(local_cloud->makeShared());
+        std::stringstream ss1;
+        ss1 << i << ".pcd";
+        pcl::io::savePCDFile(ss1.str(), *local_cloud->makeShared(), true);
+        i++;
     }
 
     grabber->stop();
@@ -234,15 +233,23 @@ void MainWindow::on_toolButton_3_clicked()
     {
         if (flag_type == 0 || flag_type == 5)
         {
-            qDebug() << "Current Idx: " << ui->tri_comboBox->currentIndex();
-            p2m.point2mesh(cloud, ui->tri_comboBox->currentIndex());
+            if (ui->tri_comboBox->currentIndex() == 0)
+            {
+                p2m.point2mesh(cloud, ui->tri_comboBox->currentIndex(), ui->poisonSpinBox->value());
+                qDebug() << "Depth set: " << ui->poisonSpinBox->value();
+            }
+
+            else
+            {
+                p2m.point2mesh(cloud, ui->tri_comboBox->currentIndex(), 0);
+            }
+
             ui->widget2->SetRenderWindow (viewer2->getRenderWindow());
-            //viewer2->setCameraPosition( 0.0, 0.0, 2.5, 0.0, 0.0, 0.0 );
             viewer2->setupInteractor (ui->widget2->GetInteractor(), ui->widget2->GetRenderWindow());
 
             if (viewer2->removeAllShapes())
             {
-                if (pcl::io::loadPolygonFileSTL("teste2.stl", *poly_mesh) != -1)
+                if (pcl::io::loadPolygonFileSTL("tri.stl", *poly_mesh) != -1)
                 {
                     viewer2->addPolygonMesh(*poly_mesh, "meshes");
                     ui->widget2->update();

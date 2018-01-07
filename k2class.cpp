@@ -43,5 +43,5 @@ void k2class::registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> clou
 
     pcl::io::savePCDFile("pointcloud.pcd", *final_cloud, true);
 
-    std::cout << "FINISHED" << std::endl;
+    qDebug() << "Finished Registration";
 }
