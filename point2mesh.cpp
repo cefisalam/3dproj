@@ -1,9 +1,11 @@
 #include "point2mesh.h"
 
+//Constructor
 Point2Mesh::Point2Mesh(QObject *parent) : QObject(parent)
 {
 }
 
+//Function to calculate normal point cloud
 void Point2Mesh::calc_normals(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
                               pcl::PointCloud<pcl::PointNormal>::Ptr pc_normals)
 {
@@ -17,6 +19,7 @@ void Point2Mesh::calc_normals(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
     pcl::copyPointCloud (*cloud, *pc_normals);
 }
 
+//Function for filtering image using StatisticalOutlierRemoval
 void Point2Mesh::filtering (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)
 {
 
@@ -27,23 +30,21 @@ void Point2Mesh::filtering (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)
     filter->filter (*cloud);
 }
 
-pcl::PolygonMesh Point2Mesh::point2mesh (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_pcl, int type)
+//Function to perform triangulation (Poison/Greedy) into point cloud
+void Point2Mesh::point2mesh (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_pcl, int type)
 {
     pcl::PointCloud<pcl::Normal>::Ptr normal (new pcl::PointCloud<pcl::Normal>);
     pcl::PointCloud<pcl::PointNormal>::Ptr normal_pc (new pcl::PointCloud<pcl::PointNormal>);
-    //pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_pcl (new pcl::PointCloud<pcl::PointXYZ>);
     pcl::PolygonMesh triangles;
     pcl::search::KdTree<pcl::PointXYZ>::Ptr kdtree (new pcl::search::KdTree<pcl::PointXYZ>);
     pcl::search::KdTree<pcl::PointNormal>::Ptr kdtreeN (new pcl::search::KdTree<pcl::PointNormal>);
-
-    //pcl::fromPCLPointCloud2 (cloud, *cloud_pcl);
 
     //Normal estimation
     pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> normal_est;
     kdtree->setInputCloud(cloud_pcl);
     normal_est.setInputCloud(cloud_pcl);
     normal_est.setSearchMethod(kdtree);
-    normal_est.setKSearch(30);
+    normal_est.setKSearch(20);
     normal_est.compute(*normal);
 
     pcl::concatenateFields(*cloud_pcl, *normal, *normal_pc);
@@ -51,14 +52,16 @@ pcl::PolygonMesh Point2Mesh::point2mesh (pcl::PointCloud<pcl::PointXYZ>::Ptr clo
 
     if (type == 0)
     {
+        qDebug() << "Poison";
         pcl::Poisson<pcl::PointNormal> poisson;
         poisson.setDepth(9);
         poisson.setInputCloud(normal_pc);
         poisson.reconstruct(triangles);
     }
 
-    else
+    else if (type == 1)
     {
+        qDebug() << "Greedy";
         pcl::GreedyProjectionTriangulation<pcl::PointNormal> greedy;
         greedy.setSearchRadius (0.02);
         greedy.setMu (2.5);
@@ -72,13 +75,13 @@ pcl::PolygonMesh Point2Mesh::point2mesh (pcl::PointCloud<pcl::PointXYZ>::Ptr clo
         greedy.reconstruct (triangles);
     }
 
-    std::string str = "teste2.stl";
+    std::string str = "tri.stl";
     pcl::io::savePolygonFileSTL(str, triangles, true);
 
-    std::cout << "FINSHED TRIANGLE" << std::endl;
-    return triangles;
+    qDebug() << "FINSHED TRIANGULATION";
 }
 
+//Function to generate align between two pairs of point clouds
 void Point2Mesh::estimate_align (const pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud1,
                                  const pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud2,
                                  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_final,
@@ -115,7 +118,7 @@ void Point2Mesh::estimate_align (const pcl::PointCloud<pcl::PointXYZ>::Ptr &clou
     calc_normals(c2, normal_c2);
 
 
-    //new_point.setRescaleValues (init_values);
+    new_point.setRescaleValues (init_values);
 
     pcl::IterativeClosestPointNonLinear<pcl::PointNormal, pcl::PointNormal> icp;
     icp.setTransformationEpsilon (1e-6);
@@ -129,8 +132,6 @@ void Point2Mesh::estimate_align (const pcl::PointCloud<pcl::PointXYZ>::Ptr &clou
     Eigen::Matrix4f previous, trgt;
     pcl::PointCloud<pcl::PointNormal>::Ptr icp_res = normal_c1;
     icp.setMaximumIterations(2);
-
-    qDebug() << "Finished the estimate_align2";
 
     for (int i = 0; i < 30; i++)
     {
@@ -154,4 +155,6 @@ void Point2Mesh::estimate_align (const pcl::PointCloud<pcl::PointXYZ>::Ptr &clou
 
     *cloud_final += *cloud1;
     transf_m = trgt;
+
+    qDebug() << "Finished the estimate_align";
 }

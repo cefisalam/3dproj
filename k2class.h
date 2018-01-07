@@ -26,21 +26,17 @@
 #include <pcl/console/print.h>
 #include <pcl/console/parse.h>
 
-class k2class : public QObject
+class k2class
 {
-    Q_OBJECT
+
 public:
-    explicit k2class(QObject *parent = nullptr);
-    std::vector<pcl::PointCloud<pcl::PointXYZ>::ConstPtr> clouds;
-    pcl::PointCloud<pcl::PointXYZ>::Ptr final_cloud;
-    Point2Mesh p2m;
-    int time;
-
-signals:
-
-public slots:
+    k2class();
+    k2class(boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer);
     void registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> clouds);
-    void init(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> clouds);
+
+private:
+     boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
+
 };
 
 #endif // K2CLASS_H

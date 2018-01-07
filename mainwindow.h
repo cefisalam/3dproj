@@ -3,7 +3,6 @@
 
 //Internal
 #include "point2mesh.h"
-#include "k1class.h"
 #include "k2class.h"
 
 //Qt
@@ -55,6 +54,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> clouds_vec;
     pcl::PolygonMesh::Ptr poly_mesh;
@@ -62,8 +62,6 @@ public:
     bool flag;
 
 public slots:
-    void create_k2_visualizer();
-    void k2visual();
     void load_pcd_files(QStringList files_pcd);
 
 private slots:
@@ -74,17 +72,19 @@ private slots:
     void on_toolButton_3_clicked();
     void on_actionOpen_files_triggered();
 
+    void on_toolButton_4_clicked();
+
 private:
     Ui::MainWindow *ui;
     QVTKWidget *widget1, *widget2;
-    boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
-    boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer2;
     int flag_type = -1;
-    k1class *kinect;
-    k2class *k2;
     QToolButton *toolButton;
     QDoubleSpinBox *z_axis_min, *z_axis_max;
     QComboBox *tri_comboBox;
+
+protected:
+    boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer1;
+    boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
 };
 
 #endif // MAINWINDOW_H
