@@ -214,7 +214,7 @@ void MainWindow::on_toolButton_clicked()
     }
 
     grabber->stop();
-    flag_type = 0;
+    flag_type = 5;
 }
 
 //Function to stop the grabber for recording point clouds
@@ -232,7 +232,7 @@ void MainWindow::on_toolButton_3_clicked()
     viewer2.reset(new pcl::visualization::PCLVisualizer("Viewer K2", false));
     if (ui->tri_comboBox->currentIndex() != -1)
     {
-        if (flag_type == 0)
+        if (flag_type == 0 || flag_type == 5)
         {
             qDebug() << "Current Idx: " << ui->tri_comboBox->currentIndex();
             p2m.point2mesh(cloud, ui->tri_comboBox->currentIndex());
