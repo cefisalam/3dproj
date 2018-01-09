@@ -1,15 +1,15 @@
 <RCC>
     <qresource prefix="/icons">
-        <file>resource/if_folder_orange_open_6868.png</file>
-        <file>resource/if_filesaveas_6047.png</file>
-        <file>resource/if_info_6077.png</file>
-        <file>resource/if_camera_test_5976.png</file>
-        <file>resource/if_player_play_6154.png</file>
-        <file>resource/if_player_rec_6155.png</file>
-        <file>resource/if_player_stop_6158.png</file>
-        <file>resource/if_emerald-theme-manager_6296.png</file>
-        <file>resource/if_folder_home2_6854.png</file>
-        <file>resource/if_edit_user_6020.png</file>
-        <file>resource/if_folder_new_6056.png</file>
+        <file>if_camera_test_5976.png</file>
+        <file>if_edit_user_6020.png</file>
+        <file>if_emerald-theme-manager_6296.png</file>
+        <file>if_filesaveas_6047.png</file>
+        <file>if_folder_home2_6854.png</file>
+        <file>if_folder_new_6056.png</file>
+        <file>if_folder_orange_open_6868.png</file>
+        <file>if_info_6077.png</file>
+        <file>if_player_play_6154.png</file>
+        <file>if_player_rec_6155.png</file>
+        <file>if_player_stop_6158.png</file>
     </qresource>
 </RCC>
