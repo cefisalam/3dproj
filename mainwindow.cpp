@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     clouds_vec (0),
-    cloud (new pcl::PointCloud<pcl::PointXYZ>()),
+    cloud (new pcl::PointCloud<pcl::PointXYZRGBA>()),
     p2m (nullptr),
     flag(false),
     poly_mesh (new pcl::PolygonMesh)
@@ -26,8 +26,9 @@ void MainWindow::load_pcd_files(QStringList files_pcd)
 {
     for (int i = 0; i < files_pcd.size(); i++)
     {
-        pcl::PointCloud<pcl::PointXYZ>::Ptr pcd (new pcl::PointCloud<pcl::PointXYZ>());
+        pcl::PointCloud<pcl::PointXYZRGBA>::Ptr pcd (new pcl::PointCloud<pcl::PointXYZRGBA>());
         pcl::io::loadPCDFile(files_pcd.at(i).toStdString(), *pcd);
+        std::cout << files_pcd.at(i).toStdString() << std::endl;
         clouds_vec.push_back(pcd);
     }
 }
@@ -173,59 +174,123 @@ void MainWindow::on_toolButton_clicked()
     flag = true;
     viewer->setCameraPosition( 0.0, 0.0, -2.5, 0.0 , 0.0 , 0.0 );
 
+    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_filter1 (new pcl::PointCloud<pcl::PointXYZRGBA>);
+    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_filter2 (new pcl::PointCloud<pcl::PointXYZRGBA>);
+    pcl::PassThrough<pcl::PointXYZRGBA> filter;
     boost::mutex mt;
-    pcl::PointCloud<pcl::PointXYZ>::ConstPtr local_cloud;
+    pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr local_cloud;
 
-    boost::function<void( const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& )> func_cb =
-            [&local_cloud, &mt]( const pcl::PointCloud<pcl::PointXYZ>::ConstPtr& ptr)
+    boost::function<void(const pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr& )> func_cb =
+            [&local_cloud, &mt]( const pcl::PointCloud<pcl::PointXYZRGBA>::ConstPtr& ptr)
     {
         boost::mutex::scoped_lock lock (mt);
         local_cloud = ptr->makeShared();
     };
 
-    boost::function<void( const pcl::visualization::KeyboardEvent& )> key_func =
-            [&local_cloud, &mt]( const pcl::visualization::KeyboardEvent& event ){
+    boost::function<void(const pcl::visualization::KeyboardEvent& )> key_func =
+            [&local_cloud, &mt, &cloud_filter1]( const pcl::visualization::KeyboardEvent& event ){
         if( event.getKeySym() == "s" && event.keyDown() ){
             boost::mutex::scoped_lock lock( mt );
-
-            pcl::VoxelGrid<pcl::PointXYZ> grid;
-            grid.setLeafSize (0.005, 0.005, 0.005);
-            grid.setInputCloud (local_cloud);
-            grid.filter (*local_cloud->makeShared());
 
             static uint32_t count = 0;
             std::ostringstream str_file;
             str_file << std::setfill( '0' ) << std::setw( 3 ) << count++;
             std::cout << str_file.str() + ".pcd\n";
-            pcl::io::savePCDFile( str_file.str() + ".pcd", *local_cloud, false );
+            pcl::io::savePCDFile( str_file.str() + ".pcd", *cloud_filter1, false );
         }
     };
 
     viewer->registerKeyboardCallback(key_func);
 
-    boost::shared_ptr<pcl::Grabber> grabber = boost::make_shared<pcl::Kinect2Grabber>();
-    boost::signals2::connection conn = grabber->registerCallback(func_cb);
-    grabber->start();
-
-    int i = 0;
-    while (flag)
+    if (ui->sensor_comboBox->currentIndex() == 0)
     {
-        viewer->spinOnce();
-        boost::mutex::scoped_try_lock lock (mt);
-        if(lock.owns_lock() && local_cloud)
-        {
+        pcl::Grabber *grabber = new pcl::io::OpenNI2Grabber();
+        boost::signals2::connection conn = grabber->registerCallback(func_cb);
+        grabber->start();
 
-            if (!viewer->updatePointCloud(local_cloud, "cloud"))
+        int i = 0;
+        while (flag)
+        {
+            viewer->spinOnce();
+            boost::mutex::scoped_try_lock lock (mt);
+            if(lock.owns_lock() && local_cloud)
             {
-                viewer->addPointCloud(local_cloud, "cloud");
+                filter.setFilterFieldName ("x");
+                filter.setFilterLimits (ui->x_min->value(), ui->x_max->value());
+                filter.setInputCloud (local_cloud);
+                filter.filter (*cloud_filter1);
+
+                filter.setFilterFieldName ("y");
+                filter.setFilterLimits (ui->y_min->value(), ui->y_max->value());
+                filter.setInputCloud (cloud_filter1);
+                filter.filter (*cloud_filter2);
+
+                filter.setFilterFieldName ("z");
+                filter.setFilterLimits (ui->z_axis_min->value(), ui->z_axis_max->value());
+                filter.setInputCloud (cloud_filter2);
+                filter.filter (*cloud_filter1);
             }
 
-            clouds_vec.push_back(local_cloud->makeShared());
+            if (!viewer->updatePointCloud(cloud_filter1, "cloud"))
+            {
+                viewer->addPointCloud(cloud_filter1, "cloud");
+            }
+
+            clouds_vec.push_back(cloud_filter1);
         }
+
+        grabber->stop();
+        flag_type = 5;
     }
 
-    grabber->stop();
-    flag_type = 5;
+    else if (ui->sensor_comboBox->currentIndex() == 1)
+    {
+        boost::shared_ptr<pcl::Grabber> grabber = boost::make_shared<pcl::Kinect2Grabber>();
+        boost::signals2::connection conn = grabber->registerCallback(func_cb);
+        grabber->start();
+
+        int i = 0;
+        while (flag)
+        {
+            viewer->spinOnce();
+            boost::mutex::scoped_try_lock lock (mt);
+            if(lock.owns_lock() && local_cloud)
+            {
+
+                filter.setFilterFieldName ("x");
+                filter.setFilterLimits (ui->x_min->value(), ui->x_max->value());
+                filter.setInputCloud (local_cloud);
+                filter.filter (*cloud_filter1);
+
+                filter.setFilterFieldName ("y");
+                filter.setFilterLimits (ui->y_min->value(), ui->y_max->value());
+                filter.setInputCloud (cloud_filter1);
+                filter.filter (*cloud_filter2);
+
+                filter.setFilterFieldName ("z");
+                filter.setFilterLimits (ui->z_axis_min->value(), ui->z_axis_max->value());
+                filter.setInputCloud (cloud_filter2);
+                filter.filter (*cloud_filter1);
+
+                if (!viewer->updatePointCloud(cloud_filter1, "cloud"))
+                {
+                    viewer->addPointCloud(cloud_filter1, "cloud");
+                }
+
+                static uint32_t count = 0;
+                std::ostringstream str_file;
+                str_file << std::setfill( '0' ) << std::setw( 3 ) << count++;
+                std::cout << str_file.str() + ".pcd\n";
+                pcl::io::savePCDFile( str_file.str() + ".pcd", *local_cloud, false );
+
+                clouds_vec.push_back(cloud_filter1);
+            }
+        }
+
+        grabber->stop();
+        flag_type = 5;
+    }
+
 }
 
 //Function to stop the grabber for recording point clouds
@@ -281,13 +346,15 @@ void MainWindow::on_toolButton_3_clicked()
 //Function to load user file set of point clouds into vector for align/triangulation
 void MainWindow::on_actionOpen_files_triggered()
 {
+    clouds_vec.clear();
 
     QStringList files_pcd = QFileDialog::getOpenFileNames(this, tr("Open mesh file"),
                                                           "C:/",
                                                           tr("Meshes *.ply *.obj *.vtk *.pcd *.stl"));
+
+
     load_pcd_files(files_pcd);
     flag = 4;
-
 }
 
 //Function to align the loaded set of point clouds
@@ -296,7 +363,7 @@ void MainWindow::on_toolButton_4_clicked()
     if (!clouds_vec.empty() || flag == 4)
     {
         k2class kinect;
-        kinect.registration(clouds_vec);
+        kinect.registrationSAC(clouds_vec);
     }
 
     else

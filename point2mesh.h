@@ -50,16 +50,21 @@ public:
 signals:
 
 public slots:
-    void calc_normals(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud,
+    void calc_normal(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud,
+                      pcl::PointCloud<pcl::Normal>::Ptr pc_normals);
+
+    void calc_normals(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud,
                       pcl::PointCloud<pcl::PointNormal>::Ptr pc_normals);
-    void estimate_align (const pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud1,
-                         const pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud2,
-                         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_final,
+
+    void estimate_align (const pcl::PointCloud<pcl::PointXYZRGBA>::Ptr &cloud1,
+                         const pcl::PointCloud<pcl::PointXYZRGBA>::Ptr &cloud2,
+                         pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_final,
                          Eigen::Matrix4f &transf_m,
                          bool flag);
 
-    void point2mesh (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_pcl, int type, int depth);
-    void filtering (pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
+    void point2mesh (pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_pcl, int type, int depth);
+    void filtering (pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud);
+    void sac_align (std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::Ptr> clouds);
 };
 
 #endif // POINT2MESH_H

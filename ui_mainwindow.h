@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.0
+** Created by: Qt User Interface Compiler version 5.9.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -51,14 +51,24 @@ public:
     QVTKWidget *widget2;
     QGroupBox *groupBox_2;
     QGridLayout *gridLayout_2;
-    QDoubleSpinBox *z_axis_min;
+    QLabel *label_3;
+    QLabel *label_5;
+    QDoubleSpinBox *x_min;
+    QDoubleSpinBox *y_min;
+    QDoubleSpinBox *x_max;
+    QDoubleSpinBox *y_max;
     QSpacerItem *verticalSpacer;
-    QToolButton *toolButton;
-    QToolButton *toolButton_2;
+    QDoubleSpinBox *z_axis_min;
     QLabel *label;
-    QDoubleSpinBox *z_axis_max;
     QLabel *label_2;
     QToolButton *toolButton_4;
+    QDoubleSpinBox *z_axis_max;
+    QToolButton *toolButton_2;
+    QToolButton *toolButton;
+    QLabel *label_4;
+    QLabel *label_6;
+    QLabel *label_7;
+    QComboBox *sensor_comboBox;
     QGroupBox *groupBox;
     QVBoxLayout *verticalLayout_3;
     QComboBox *tri_comboBox;
@@ -85,7 +95,7 @@ public:
         actionOpen_file = new QAction(MainWindow);
         actionOpen_file->setObjectName(QStringLiteral("actionOpen_file"));
         QIcon icon;
-        icon.addFile(QStringLiteral(":/icons/resource/if_folder_orange_open_6868.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QStringLiteral(":/icons/if_folder_orange_open_6868.png"), QSize(), QIcon::Normal, QIcon::Off);
         icon.addFile(QStringLiteral(":/icons/resource/if_folder_orange_open_6868.png"), QSize(), QIcon::Normal, QIcon::On);
         icon.addFile(QStringLiteral(":/icons/resource/if_folder_orange_open_6868.png"), QSize(), QIcon::Disabled, QIcon::Off);
         icon.addFile(QStringLiteral(":/icons/resource/if_folder_orange_open_6868.png"), QSize(), QIcon::Disabled, QIcon::On);
@@ -98,18 +108,18 @@ public:
         actionSave_file = new QAction(MainWindow);
         actionSave_file->setObjectName(QStringLiteral("actionSave_file"));
         QIcon icon1;
-        icon1.addFile(QStringLiteral(":/icons/resource/if_filesaveas_6047.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QStringLiteral(":/icons/if_filesaveas_6047.png"), QSize(), QIcon::Normal, QIcon::Off);
         icon1.addFile(QStringLiteral(":/icons/resource/if_filesaveas_6047.png"), QSize(), QIcon::Normal, QIcon::On);
         actionSave_file->setIcon(icon1);
         actionAbout = new QAction(MainWindow);
         actionAbout->setObjectName(QStringLiteral("actionAbout"));
         QIcon icon2;
-        icon2.addFile(QStringLiteral(":/icons/resource/if_info_6077.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon2.addFile(QStringLiteral(":/icons/if_info_6077.png"), QSize(), QIcon::Normal, QIcon::Off);
         actionAbout->setIcon(icon2);
         actionOpen_files = new QAction(MainWindow);
         actionOpen_files->setObjectName(QStringLiteral("actionOpen_files"));
         QIcon icon3;
-        icon3.addFile(QStringLiteral(":/icons/resource/if_folder_new_6056.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon3.addFile(QStringLiteral(":/icons/if_folder_new_6056.png"), QSize(), QIcon::Normal, QIcon::Off);
         actionOpen_files->setIcon(icon3);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
@@ -168,49 +178,59 @@ public:
         gridLayout_2->setSpacing(6);
         gridLayout_2->setContentsMargins(11, 11, 11, 11);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        z_axis_min = new QDoubleSpinBox(groupBox_2);
-        z_axis_min->setObjectName(QStringLiteral("z_axis_min"));
+        label_3 = new QLabel(groupBox_2);
+        label_3->setObjectName(QStringLiteral("label_3"));
 
-        gridLayout_2->addWidget(z_axis_min, 1, 0, 1, 1);
+        gridLayout_2->addWidget(label_3, 4, 0, 1, 1);
+
+        label_5 = new QLabel(groupBox_2);
+        label_5->setObjectName(QStringLiteral("label_5"));
+
+        gridLayout_2->addWidget(label_5, 6, 0, 1, 1);
+
+        x_min = new QDoubleSpinBox(groupBox_2);
+        x_min->setObjectName(QStringLiteral("x_min"));
+        x_min->setMinimum(-99);
+
+        gridLayout_2->addWidget(x_min, 5, 0, 1, 1);
+
+        y_min = new QDoubleSpinBox(groupBox_2);
+        y_min->setObjectName(QStringLiteral("y_min"));
+        y_min->setMinimum(-99);
+
+        gridLayout_2->addWidget(y_min, 7, 0, 1, 1);
+
+        x_max = new QDoubleSpinBox(groupBox_2);
+        x_max->setObjectName(QStringLiteral("x_max"));
+        x_max->setMinimum(-99);
+
+        gridLayout_2->addWidget(x_max, 5, 1, 1, 1);
+
+        y_max = new QDoubleSpinBox(groupBox_2);
+        y_max->setObjectName(QStringLiteral("y_max"));
+        y_max->setMinimum(-99);
+
+        gridLayout_2->addWidget(y_max, 7, 1, 1, 1);
 
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        gridLayout_2->addItem(verticalSpacer, 3, 0, 1, 1);
+        gridLayout_2->addItem(verticalSpacer, 9, 0, 1, 1);
 
-        toolButton = new QToolButton(groupBox_2);
-        toolButton->setObjectName(QStringLiteral("toolButton"));
-        QIcon icon4;
-        icon4.addFile(QStringLiteral(":/icons/resource/if_player_play_6154.png"), QSize(), QIcon::Normal, QIcon::Off);
-        toolButton->setIcon(icon4);
-        toolButton->setIconSize(QSize(32, 32));
-        toolButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+        z_axis_min = new QDoubleSpinBox(groupBox_2);
+        z_axis_min->setObjectName(QStringLiteral("z_axis_min"));
+        z_axis_min->setMinimum(-99);
 
-        gridLayout_2->addWidget(toolButton, 2, 0, 1, 1);
-
-        toolButton_2 = new QToolButton(groupBox_2);
-        toolButton_2->setObjectName(QStringLiteral("toolButton_2"));
-        QIcon icon5;
-        icon5.addFile(QStringLiteral(":/icons/resource/if_player_stop_6158.png"), QSize(), QIcon::Normal, QIcon::Off);
-        toolButton_2->setIcon(icon5);
-        toolButton_2->setIconSize(QSize(32, 32));
-        toolButton_2->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
-        gridLayout_2->addWidget(toolButton_2, 2, 1, 1, 1);
+        gridLayout_2->addWidget(z_axis_min, 3, 0, 1, 1);
 
         label = new QLabel(groupBox_2);
         label->setObjectName(QStringLiteral("label"));
 
-        gridLayout_2->addWidget(label, 0, 0, 1, 1);
-
-        z_axis_max = new QDoubleSpinBox(groupBox_2);
-        z_axis_max->setObjectName(QStringLiteral("z_axis_max"));
-
-        gridLayout_2->addWidget(z_axis_max, 1, 1, 1, 1);
+        gridLayout_2->addWidget(label, 2, 0, 1, 1);
 
         label_2 = new QLabel(groupBox_2);
         label_2->setObjectName(QStringLiteral("label_2"));
 
-        gridLayout_2->addWidget(label_2, 0, 1, 1, 1);
+        gridLayout_2->addWidget(label_2, 2, 1, 1, 1);
 
         toolButton_4 = new QToolButton(groupBox_2);
         toolButton_4->setObjectName(QStringLiteral("toolButton_4"));
@@ -219,13 +239,59 @@ public:
         sizePolicy3.setVerticalStretch(0);
         sizePolicy3.setHeightForWidth(toolButton_4->sizePolicy().hasHeightForWidth());
         toolButton_4->setSizePolicy(sizePolicy3);
-        QIcon icon6;
-        icon6.addFile(QStringLiteral(":/icons/resource/if_edit_user_6020.png"), QSize(), QIcon::Normal, QIcon::Off);
-        toolButton_4->setIcon(icon6);
+        QIcon icon4;
+        icon4.addFile(QStringLiteral(":/icons/if_edit_user_6020.png"), QSize(), QIcon::Normal, QIcon::Off);
+        toolButton_4->setIcon(icon4);
         toolButton_4->setIconSize(QSize(48, 48));
         toolButton_4->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-        gridLayout_2->addWidget(toolButton_4, 4, 0, 1, 2);
+        gridLayout_2->addWidget(toolButton_4, 10, 0, 1, 2);
+
+        z_axis_max = new QDoubleSpinBox(groupBox_2);
+        z_axis_max->setObjectName(QStringLiteral("z_axis_max"));
+        z_axis_max->setMinimum(-99);
+
+        gridLayout_2->addWidget(z_axis_max, 3, 1, 1, 1);
+
+        toolButton_2 = new QToolButton(groupBox_2);
+        toolButton_2->setObjectName(QStringLiteral("toolButton_2"));
+        QIcon icon5;
+        icon5.addFile(QStringLiteral(":/icons/if_player_stop_6158.png"), QSize(), QIcon::Normal, QIcon::Off);
+        toolButton_2->setIcon(icon5);
+        toolButton_2->setIconSize(QSize(32, 32));
+        toolButton_2->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_2->addWidget(toolButton_2, 8, 1, 1, 1);
+
+        toolButton = new QToolButton(groupBox_2);
+        toolButton->setObjectName(QStringLiteral("toolButton"));
+        QIcon icon6;
+        icon6.addFile(QStringLiteral(":/icons/if_player_play_6154.png"), QSize(), QIcon::Normal, QIcon::Off);
+        toolButton->setIcon(icon6);
+        toolButton->setIconSize(QSize(32, 32));
+        toolButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+
+        gridLayout_2->addWidget(toolButton, 8, 0, 1, 1);
+
+        label_4 = new QLabel(groupBox_2);
+        label_4->setObjectName(QStringLiteral("label_4"));
+
+        gridLayout_2->addWidget(label_4, 4, 1, 1, 1);
+
+        label_6 = new QLabel(groupBox_2);
+        label_6->setObjectName(QStringLiteral("label_6"));
+
+        gridLayout_2->addWidget(label_6, 6, 1, 1, 1);
+
+        label_7 = new QLabel(groupBox_2);
+        label_7->setObjectName(QStringLiteral("label_7"));
+
+        gridLayout_2->addWidget(label_7, 0, 0, 1, 1);
+
+        sensor_comboBox = new QComboBox(groupBox_2);
+        sensor_comboBox->setObjectName(QStringLiteral("sensor_comboBox"));
+
+        gridLayout_2->addWidget(sensor_comboBox, 1, 0, 1, 2);
 
 
         gridLayout->addWidget(groupBox_2, 0, 0, 1, 1);
@@ -274,7 +340,7 @@ public:
         sizePolicy6.setHeightForWidth(toolButton_3->sizePolicy().hasHeightForWidth());
         toolButton_3->setSizePolicy(sizePolicy6);
         QIcon icon7;
-        icon7.addFile(QStringLiteral(":/icons/resource/if_emerald-theme-manager_6296.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon7.addFile(QStringLiteral(":/icons/if_emerald-theme-manager_6296.png"), QSize(), QIcon::Normal, QIcon::Off);
         toolButton_3->setIcon(icon7);
         toolButton_3->setIconSize(QSize(32, 32));
         toolButton_3->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -314,31 +380,41 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
-        actionOpen_file->setText(QApplication::translate("MainWindow", "Open file", 0));
-        actionSave_file->setText(QApplication::translate("MainWindow", "Save file", 0));
-        actionAbout->setText(QApplication::translate("MainWindow", "About", 0));
-        actionOpen_files->setText(QApplication::translate("MainWindow", "Open files", 0));
-        groupBox_2->setTitle(QApplication::translate("MainWindow", "Acquisition Features", 0));
-        toolButton->setText(QApplication::translate("MainWindow", "Start \n"
-"Acquisition", 0));
-        toolButton_2->setText(QApplication::translate("MainWindow", "Stop \n"
-"Acquisition", 0));
-        label->setText(QApplication::translate("MainWindow", "MIN (z axis)", 0));
-        label_2->setText(QApplication::translate("MainWindow", "MAX (z axis)", 0));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", Q_NULLPTR));
+        actionOpen_file->setText(QApplication::translate("MainWindow", "Open file", Q_NULLPTR));
+        actionSave_file->setText(QApplication::translate("MainWindow", "Save file", Q_NULLPTR));
+        actionAbout->setText(QApplication::translate("MainWindow", "About", Q_NULLPTR));
+        actionOpen_files->setText(QApplication::translate("MainWindow", "Open files", Q_NULLPTR));
+        groupBox_2->setTitle(QApplication::translate("MainWindow", "Acquisition Features", Q_NULLPTR));
+        label_3->setText(QApplication::translate("MainWindow", "MIN (x axis)", Q_NULLPTR));
+        label_5->setText(QApplication::translate("MainWindow", "MIN (y axis)", Q_NULLPTR));
+        label->setText(QApplication::translate("MainWindow", "MIN (z axis)", Q_NULLPTR));
+        label_2->setText(QApplication::translate("MainWindow", "MAX (z axis)", Q_NULLPTR));
         toolButton_4->setText(QApplication::translate("MainWindow", "Load\n"
-"Aligned Points", 0));
-        groupBox->setTitle(QApplication::translate("MainWindow", "Registration Features", 0));
+"Aligned Points", Q_NULLPTR));
+        toolButton_2->setText(QApplication::translate("MainWindow", "Stop \n"
+"Acquisition", Q_NULLPTR));
+        toolButton->setText(QApplication::translate("MainWindow", "Start \n"
+"Acquisition", Q_NULLPTR));
+        label_4->setText(QApplication::translate("MainWindow", "MAX (x axis)", Q_NULLPTR));
+        label_6->setText(QApplication::translate("MainWindow", "MAX (y axis)", Q_NULLPTR));
+        label_7->setText(QApplication::translate("MainWindow", "TextLabel", Q_NULLPTR));
+        sensor_comboBox->clear();
+        sensor_comboBox->insertItems(0, QStringList()
+         << QApplication::translate("MainWindow", "Kinect V1", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Kinect V2", Q_NULLPTR)
+        );
+        groupBox->setTitle(QApplication::translate("MainWindow", "Registration Features", Q_NULLPTR));
         tri_comboBox->clear();
         tri_comboBox->insertItems(0, QStringList()
-         << QApplication::translate("MainWindow", "Poisson", 0)
-         << QApplication::translate("MainWindow", "Greedy", 0)
+         << QApplication::translate("MainWindow", "Poisson", Q_NULLPTR)
+         << QApplication::translate("MainWindow", "Greedy", Q_NULLPTR)
         );
-        tri_comboBox->setCurrentText(QApplication::translate("MainWindow", "Poisson", 0));
+        tri_comboBox->setCurrentText(QApplication::translate("MainWindow", "Poisson", Q_NULLPTR));
         toolButton_3->setText(QApplication::translate("MainWindow", "Create\n"
-"Triangle Mesh", 0));
-        menuFile->setTitle(QApplication::translate("MainWindow", "File", 0));
-        menuHelp->setTitle(QApplication::translate("MainWindow", "Help", 0));
+"Triangle Mesh", Q_NULLPTR));
+        menuFile->setTitle(QApplication::translate("MainWindow", "File", Q_NULLPTR));
+        menuHelp->setTitle(QApplication::translate("MainWindow", "Help", Q_NULLPTR));
     } // retranslateUi
 
 };

@@ -25,6 +25,19 @@
 #include <pcl/io/ply_io.h>
 #include <pcl/console/print.h>
 #include <pcl/console/parse.h>
+#include <pcl/features/fpfh.h>
+#include <Eigen/Core>
+#include <pcl/point_types.h>
+#include <pcl/point_cloud.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/kdtree/kdtree_flann.h>
+#include <pcl/filters/passthrough.h>
+#include <pcl/filters/voxel_grid.h>
+#include <pcl/features/normal_3d.h>
+#include <pcl/features/fpfh.h>
+#include <pcl/registration/ia_ransac.h>
+
+using namespace pcl;
 
 class k2class
 {
@@ -32,8 +45,12 @@ class k2class
 public:
     k2class();
     k2class(boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer);
-    void registration(std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> clouds);
+    void registration(std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::Ptr> clouds);
+    void registration2(std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::Ptr> clouds);
+    pcl::PointCloud<pcl::FPFHSignature33>::Ptr getFeatures(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud,
+                                                                pcl::PointCloud<pcl::Normal>::Ptr normals);
 
+    void registrationSAC (std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::Ptr> clouds);
 private:
      boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
 
