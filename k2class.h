@@ -46,11 +46,8 @@ public:
     k2class();
     k2class(boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer);
     void registration(std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::Ptr> clouds);
-    void registration2(std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::Ptr> clouds);
-    pcl::PointCloud<pcl::FPFHSignature33>::Ptr getFeatures(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud,
-                                                                pcl::PointCloud<pcl::Normal>::Ptr normals);
-
     void registrationSAC (std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::Ptr> clouds);
+
 private:
      boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
 

@@ -40,7 +40,6 @@
 #include <pcl/surface/mls.h>
 #include <pcl/surface/poisson.h>
 
-
 class Point2Mesh : public QObject
 {
     Q_OBJECT
@@ -64,7 +63,6 @@ public slots:
 
     void point2mesh (pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_pcl, int type, int depth);
     void filtering (pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud);
-    void sac_align (std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::Ptr> clouds);
 };
 
 #endif // POINT2MESH_H

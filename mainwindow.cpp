@@ -272,19 +272,15 @@ void MainWindow::on_toolButton_clicked()
                 filter.setInputCloud (cloud_filter2);
                 filter.filter (*cloud_filter1);
 
-                if (!viewer->updatePointCloud(cloud_filter1, "cloud"))
-                {
-                    viewer->addPointCloud(cloud_filter1, "cloud");
-                }
-
-                static uint32_t count = 0;
-                std::ostringstream str_file;
-                str_file << std::setfill( '0' ) << std::setw( 3 ) << count++;
-                std::cout << str_file.str() + ".pcd\n";
-                pcl::io::savePCDFile( str_file.str() + ".pcd", *local_cloud, false );
-
-                clouds_vec.push_back(cloud_filter1);
             }
+
+            if (!viewer->updatePointCloud(cloud_filter1, "cloud"))
+            {
+                viewer->addPointCloud(cloud_filter1, "cloud");
+            }
+
+            clouds_vec.push_back(cloud_filter1);
+
         }
 
         grabber->stop();
@@ -363,7 +359,7 @@ void MainWindow::on_toolButton_4_clicked()
     if (!clouds_vec.empty() || flag == 4)
     {
         k2class kinect;
-        kinect.registrationSAC(clouds_vec);
+        kinect.registration(clouds_vec);
     }
 
     else

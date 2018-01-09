@@ -143,7 +143,7 @@ public:
         sizePolicy1.setHeightForWidth(widget1->sizePolicy().hasHeightForWidth());
         widget1->setSizePolicy(sizePolicy1);
         widget1->setMinimumSize(QSize(0, 250));
-        widget1->setStyleSheet(QStringLiteral("background-color: rgb(170, 255, 0);"));
+        widget1->setStyleSheet(QStringLiteral("background-color: rgb(0, 0, 0);"));
 
         verticalLayout->addWidget(widget1);
 
@@ -165,7 +165,7 @@ public:
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
         widget2 = new QVTKWidget(frame);
         widget2->setObjectName(QStringLiteral("widget2"));
-        widget2->setStyleSheet(QStringLiteral("background-color: rgb(0, 255, 255);"));
+        widget2->setStyleSheet(QStringLiteral("background-color: rgb(0, 0, 0);"));
 
         verticalLayout_2->addWidget(widget2);
 
@@ -191,24 +191,28 @@ public:
         x_min = new QDoubleSpinBox(groupBox_2);
         x_min->setObjectName(QStringLiteral("x_min"));
         x_min->setMinimum(-99);
+        x_min->setValue(-2);
 
         gridLayout_2->addWidget(x_min, 5, 0, 1, 1);
 
         y_min = new QDoubleSpinBox(groupBox_2);
         y_min->setObjectName(QStringLiteral("y_min"));
         y_min->setMinimum(-99);
+        y_min->setValue(-2);
 
         gridLayout_2->addWidget(y_min, 7, 0, 1, 1);
 
         x_max = new QDoubleSpinBox(groupBox_2);
         x_max->setObjectName(QStringLiteral("x_max"));
         x_max->setMinimum(-99);
+        x_max->setValue(2);
 
         gridLayout_2->addWidget(x_max, 5, 1, 1, 1);
 
         y_max = new QDoubleSpinBox(groupBox_2);
         y_max->setObjectName(QStringLiteral("y_max"));
         y_max->setMinimum(-99);
+        y_max->setValue(2);
 
         gridLayout_2->addWidget(y_max, 7, 1, 1, 1);
 
@@ -219,6 +223,7 @@ public:
         z_axis_min = new QDoubleSpinBox(groupBox_2);
         z_axis_min->setObjectName(QStringLiteral("z_axis_min"));
         z_axis_min->setMinimum(-99);
+        z_axis_min->setValue(-2);
 
         gridLayout_2->addWidget(z_axis_min, 3, 0, 1, 1);
 
@@ -250,6 +255,7 @@ public:
         z_axis_max = new QDoubleSpinBox(groupBox_2);
         z_axis_max->setObjectName(QStringLiteral("z_axis_max"));
         z_axis_max->setMinimum(-99);
+        z_axis_max->setValue(2);
 
         gridLayout_2->addWidget(z_axis_max, 3, 1, 1, 1);
 

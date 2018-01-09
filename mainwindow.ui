@@ -51,7 +51,7 @@
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(170, 255, 0);</string>
+          <string notr="true">background-color: rgb(0, 0, 0);</string>
          </property>
         </widget>
        </item>
@@ -76,7 +76,7 @@
        <item>
         <widget class="QVTKWidget" name="widget2" native="true">
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(0, 255, 255);</string>
+          <string notr="true">background-color: rgb(0, 0, 0);</string>
          </property>
         </widget>
        </item>
@@ -108,12 +108,18 @@
          <property name="minimum">
           <double>-99.000000000000000</double>
          </property>
+         <property name="value">
+          <double>-2.000000000000000</double>
+         </property>
         </widget>
        </item>
        <item row="7" column="0">
         <widget class="QDoubleSpinBox" name="y_min">
          <property name="minimum">
           <double>-99.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>-2.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -122,12 +128,18 @@
          <property name="minimum">
           <double>-99.000000000000000</double>
          </property>
+         <property name="value">
+          <double>2.000000000000000</double>
+         </property>
         </widget>
        </item>
        <item row="7" column="1">
         <widget class="QDoubleSpinBox" name="y_max">
          <property name="minimum">
           <double>-99.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>2.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -148,6 +160,9 @@
         <widget class="QDoubleSpinBox" name="z_axis_min">
          <property name="minimum">
           <double>-99.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>-2.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -196,6 +211,9 @@ Aligned Points</string>
         <widget class="QDoubleSpinBox" name="z_axis_max">
          <property name="minimum">
           <double>-99.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>2.000000000000000</double>
          </property>
         </widget>
        </item>

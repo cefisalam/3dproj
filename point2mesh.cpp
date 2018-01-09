@@ -12,7 +12,7 @@ void Point2Mesh::calc_normal(pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud,
     pcl::NormalEstimation<pcl::PointXYZRGBA, pcl::Normal> normal_est;
     pcl::search::KdTree<pcl::PointXYZRGBA>::Ptr kdtree (new pcl::search::KdTree<pcl::PointXYZRGBA> ());
     normal_est.setSearchMethod (kdtree);
-    normal_est.setRadiusSearch(0.05);
+    normal_est.setKSearch (30);
 
     normal_est.setInputCloud(cloud);
     normal_est.compute (*pc_normals);
@@ -65,23 +65,12 @@ void Point2Mesh::point2mesh (pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_pcl, 
     pcl::concatenateFields(*cloud_pcl_xyz, *normal, *normal_pc);
     kdtreeN->setInputCloud(normal_pc);
 
-    //MLS computation
-    pcl::PointCloud<pcl::PointNormal>::Ptr cloud_mls (new pcl::PointCloud<pcl::PointNormal>);
-    pcl::MovingLeastSquares<pcl::PointXYZ, pcl::PointNormal> mls_process;
-    mls_process.setComputeNormals (true);
-    mls_process.setInputCloud (cloud_pcl_xyz);
-    mls_process.setPolynomialFit (true);
-    mls_process.setSearchMethod (kdtree);
-    mls_process.setSearchRadius (0.15);
-    mls_process.process (*cloud_mls);
-    mls_process.setSqrGaussParam(0.0009);
-
     if (type == 0)
     {
         qDebug() << "Poison";
         pcl::Poisson<pcl::PointNormal> poisson;
         poisson.setDepth(depth);
-        poisson.setInputCloud(cloud_mls);
+        poisson.setInputCloud(normal_pc);
         poisson.reconstruct(triangles);
     }
 
@@ -89,14 +78,14 @@ void Point2Mesh::point2mesh (pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud_pcl, 
     {
         qDebug() << "Greedy";
         pcl::GreedyProjectionTriangulation<pcl::PointNormal> greedy;
-        greedy.setSearchRadius(0.025);
-        greedy.setMu(2.5);
+        greedy.setSearchRadius(0.8);
+        greedy.setMu(10);
         greedy.setMaximumNearestNeighbors (100);
-        greedy.setMaximumSurfaceAngle (M_PI/4);
-        greedy.setMinimumAngle (M_PI/18);
-        greedy.setMaximumAngle(2*M_PI/3);
+        greedy.setMaximumSurfaceAngle (M_PI);
+        greedy.setMinimumAngle (M_PI/10);
+        greedy.setMaximumAngle(M_PI);
         greedy.setNormalConsistency (false);
-        greedy.setInputCloud (cloud_mls);
+        greedy.setInputCloud (normal_pc);
         greedy.setSearchMethod (kdtreeN);
         greedy.reconstruct (triangles);
     }
@@ -180,9 +169,4 @@ void Point2Mesh::estimate_align (const pcl::PointCloud<pcl::PointXYZRGBA>::Ptr &
 
     *cloud_final += *c1;
     transf_m = trgt;
-}
-
-void Point2Mesh::sac_align (std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::Ptr> clouds)
-{
-
 }

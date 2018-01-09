@@ -37,60 +37,8 @@ void k2class::registration(std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::Ptr> 
         qDebug() << "Finished Align";
     }
 
-    p2m.filtering (final_cloud);
+    //p2m.filtering (final_cloud);
 
-    pcl::io::savePCDFile("pointcloud.pcd", *final_cloud, true);
-
-    qDebug() << "Finished Registration";
-}
-
-void k2class::registration2 (std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::Ptr> clouds)
-{
-    qDebug() << "Start registration step";
-
-    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr final_cloud (new pcl::PointCloud<pcl::PointXYZRGBA>());
-    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr previous (new pcl::PointCloud<pcl::PointXYZRGBA>());
-    Point2Mesh p2m;
-    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr c1 (new pcl::PointCloud<pcl::PointXYZRGBA>());
-    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr c2 (new pcl::PointCloud<pcl::PointXYZRGBA>());
-    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr grid_c1 (new pcl::PointCloud<pcl::PointXYZRGBA>());
-    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr grid_c2 (new pcl::PointCloud<pcl::PointXYZRGBA>());
-    Eigen::Matrix4f transf_m = Eigen::Matrix4f::Identity (), transf2p2;
-    pcl::IterativeClosestPoint<pcl::PointXYZRGBA, pcl::PointXYZRGBA> icp;
-    pcl::VoxelGrid<pcl::PointXYZRGBA> grid;
-    grid.setLeafSize (0.01, 0.01, 0.01);
-
-    previous = clouds.at(0);
-    for (size_t i = 1; i < clouds.size(); i++)
-    {
-        c1 = previous;
-        c2 = clouds[i];
-
-        std::vector<int> indices;
-        pcl::removeNaNFromPointCloud (*c1,*c1,indices);
-        pcl::removeNaNFromPointCloud (*c2,*c2,indices);
-
-        icp.setMaxCorrespondenceDistance(0.1);
-        icp.setTransformationEpsilon (1e-6);
-        icp.setMaximumIterations (2);
-        icp.setRANSACOutlierRejectionThreshold(0.01);
-        icp.setEuclideanFitnessEpsilon(0.000000000001);
-        icp.setTransformationEpsilon(0.0000001);
-        icp.setInputCloud (c1);
-        icp.setInputTarget (c2);
-        icp.align (*final_cloud);
-
-        Eigen::Matrix4f transf2p2 = icp.getFinalTransformation();
-        pcl::transformPointCloud(*c1, *final_cloud, transf2p2);
-        *final_cloud += *c2;
-
-        previous = final_cloud;
-        std::cout << "DONE." << std::endl;
-    }
-
-    p2m.filtering (final_cloud);
-    pcl::visualization::CloudViewer viewer("Final");
-    viewer.showCloud(final_cloud);
     pcl::io::savePCDFile("pointcloud.pcd", *final_cloud, true);
 
     qDebug() << "Finished Registration";
@@ -107,8 +55,6 @@ void k2class::registrationSAC (std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::P
     pcl::PointCloud<pcl::PointXYZRGBA>::Ptr previous (new pcl::PointCloud<pcl::PointXYZRGBA>());
     pcl::PointCloud<pcl::PointXYZRGBA>::Ptr final (new pcl::PointCloud<pcl::PointXYZRGBA>());
     pcl::PointCloud<pcl::PointXYZRGBA>::Ptr tmp (new pcl::PointCloud<pcl::PointXYZRGBA>());
-    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr grid_c1 (new pcl::PointCloud<pcl::PointXYZRGBA>());
-    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr grid_c2 (new pcl::PointCloud<pcl::PointXYZRGBA>());
     pcl::VoxelGrid<pcl::PointXYZRGBA> grid;
     Point2Mesh p2m;
     pcl::PointCloud<pcl::FPFHSignature33>::Ptr features_c1 = pcl::PointCloud<pcl::FPFHSignature33>::Ptr (new PointCloud<FPFHSignature33>);
@@ -116,7 +62,6 @@ void k2class::registrationSAC (std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::P
     pcl::search::KdTree<pcl::PointXYZRGBA>::Ptr kdtree = pcl::search::KdTree<pcl::PointXYZRGBA>::Ptr (new search::KdTree<PointXYZRGBA>);
     pcl::FPFHEstimation<pcl::PointXYZRGBA, pcl::Normal, pcl::FPFHSignature33> FPFH_est;
     pcl::SampleConsensusInitialAlignment<pcl::PointXYZRGBA, pcl::PointXYZRGBA, pcl::FPFHSignature33> SACIA;
-    Eigen::Matrix4f transf_m;
 
     grid.setLeafSize (0.01f, 0.01f, 0.01f);
     previous = clouds[0];
@@ -125,13 +70,12 @@ void k2class::registrationSAC (std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::P
         c1 = previous;
         c2 = clouds[i];
 
+        //Remove NaN and downsampling
         std::vector<int> indices;
         pcl::removeNaNFromPointCloud (*c1,*c1,indices);
         pcl::removeNaNFromPointCloud (*c2,*c2,indices);
-
         grid.setInputCloud (c1);
         grid.filter (*_c1);
-
         grid.setInputCloud (c2);
         grid.filter (*_c2);
 
@@ -146,13 +90,14 @@ void k2class::registrationSAC (std::vector<pcl::PointCloud<pcl::PointXYZRGBA>::P
         FPFH_est.setRadiusSearch(0.01);
         FPFH_est.compute(*features_c1);
 
-        //Compute FPFH features for _c1 cloud
+        //Compute FPFH features for _c2 cloud
         FPFH_est.setInputCloud(_c2);
         FPFH_est.setInputNormals(normal_c2);
         FPFH_est.setSearchMethod(kdtree);
         FPFH_est.setRadiusSearch(0.01);
         FPFH_est.compute(*features_c2);
 
+        //SAC-IA alignment
         SACIA.setInputCloud(_c2);
         SACIA.setSourceFeatures(features_c2);
         SACIA.setInputTarget(_c1);
